@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 90" fill="none">
+  <defs>
+    <linearGradient id="hzFullGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B4F37" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+  </defs>
+  <!-- Mark icon -->
+  <rect x="5" y="10" width="70" height="70" rx="18" fill="#0B4F37" />
+  <path d="M25 28V62" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" />
+  <path d="M55 28V62" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" />
+  <path d="M25 45H55" stroke="#10B981" stroke-width="6" stroke-linecap="round" />
+  <circle cx="40" cy="33" r="4" fill="#34D399" />
+  <circle cx="40" cy="57" r="4" fill="#34D399" />
+  
+  <!-- Text -->
+  <text x="92" y="47" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="34" letter-spacing="1.5" fill="#0B4F37">HAZINIY</text>
+  <text x="94" y="68" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="11" letter-spacing="3" fill="#10B981">LEARNING CENTER • SPEAKING</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" fill="#F8FAFC"/>
+  <!-- Discussion board -->
+  <rect x="250" y="60" width="300" height="150" rx="10" fill="#E2E8F0" stroke="#CBD5E1" stroke-width="4"/>
+  <line x1="280" y1="90" x2="450" y2="90" stroke="#0B4F37" stroke-width="6" stroke-linecap="round"/>
+  <line x1="280" y1="120" x2="420" y2="120" stroke="#10B981" stroke-width="5" stroke-linecap="round"/>
+  <line x1="280" y1="150" x2="380" y2="150" stroke="#94A3B8" stroke-width="4" stroke-linecap="round"/>
+  <!-- Big table -->
+  <ellipse cx="400" cy="420" rx="320" ry="90" fill="#E2E8F0" stroke="#CBD5E1" stroke-width="4"/>
+  <!-- Students in circle -->
+  <!-- Student 1 -->
+  <circle cx="220" cy="290" r="38" fill="#FCD34D"/>
+  <rect x="180" y="335" width="80" height="90" rx="16" fill="#3B82F6"/>
+  <!-- Student 2 -->
+  <circle cx="400" cy="270" r="38" fill="#FDE68A"/>
+  <rect x="360" y="315" width="80" height="90" rx="16" fill="#0B4F37"/>
+  <!-- Student 3 -->
+  <circle cx="580" cy="290" r="38" fill="#FCD34D"/>
+  <rect x="540" y="335" width="80" height="90" rx="16" fill="#EC4899"/>
+  <!-- Open laptops & notebooks on table -->
+  <rect x="250" y="390" width="60" height="35" rx="3" fill="#64748B"/>
+  <rect x="370" y="390" width="60" height="35" rx="3" fill="#64748B"/>
+  <rect x="490" y="390" width="60" height="35" rx="3" fill="#64748B"/>
+  <!-- Speech bubble -->
+  <rect x="440" y="220" width="90" height="40" rx="12" fill="#10B981"/>
+  <text x="485" y="245" font-family="system-ui, sans-serif" font-weight="bold" font-size="14" fill="#FFFFFF" text-anchor="middle">Idea!</text>
+  <text x="400" y="550" font-family="system-ui, sans-serif" font-weight="700" font-size="22" fill="#0B4F37" text-anchor="middle">Option B: Group Study (Collaboration)</text>
+</svg>

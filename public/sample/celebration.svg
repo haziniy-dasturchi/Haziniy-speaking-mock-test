@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" fill="#FEFCE8"/>
+  <!-- Decorative banners -->
+  <path d="M50 80 Q 200 130 400 80 Q 600 130 750 80" stroke="#EAB308" stroke-width="4" fill="none"/>
+  <!-- Triangular flags -->
+  <polygon points="100,88 120,135 140,92" fill="#EF4444"/>
+  <polygon points="180,98 200,145 220,102" fill="#3B82F6"/>
+  <polygon points="260,103 280,150 300,100" fill="#10B981"/>
+  <polygon points="340,94 360,140 380,88" fill="#F59E0B"/>
+  <polygon points="420,88 440,135 460,92" fill="#8B5CF6"/>
+  <polygon points="500,98 520,145 540,102" fill="#EC4899"/>
+  <polygon points="580,102 600,148 620,95" fill="#10B981"/>
+  <polygon points="660,88 680,135 700,82" fill="#3B82F6"/>
+
+  <!-- Dining table with feast -->
+  <rect x="80" y="380" width="640" height="120" rx="20" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="4"/>
+  <!-- Dishes / Food -->
+  <ellipse cx="250" cy="430" rx="50" ry="25" fill="#F87171"/>
+  <ellipse cx="400" cy="430" rx="70" ry="30" fill="#FBBF24"/>
+  <ellipse cx="550" cy="430" rx="50" ry="25" fill="#34D399"/>
+
+  <!-- Family / Friends gathered -->
+  <!-- Person 1 -->
+  <circle cx="200" cy="280" r="35" fill="#FCD34D"/>
+  <rect x="165" y="320" width="70" height="70" rx="14" fill="#0B4F37"/>
+  <!-- Person 2 -->
+  <circle cx="330" cy="260" r="35" fill="#FDE68A"/>
+  <rect x="295" y="300" width="70" height="90" rx="14" fill="#2563EB"/>
+  <!-- Person 3 (Elder) -->
+  <circle cx="470" cy="260" r="35" fill="#FEF08A"/>
+  <rect x="435" y="300" width="70" height="90" rx="14" fill="#D97706"/>
+  <!-- Person 4 -->
+  <circle cx="600" cy="280" r="35" fill="#FCD34D"/>
+  <rect x="565" y="320" width="70" height="70" rx="14" fill="#DC2626"/>
+
+  <text x="400" y="555" font-family="system-ui, sans-serif" font-weight="700" font-size="22" fill="#0B4F37" text-anchor="middle">A Traditional Family Gathering and Celebration</text>
+</svg>
