@@ -47,23 +47,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center p-4 bg-slate-50 relative overflow-hidden">
-      {/* Decorative background glows */}
-      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-emerald-100/50 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-50 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen w-full flex flex-col justify-center items-center p-4 bg-gradient-to-br from-[#0A5D3A] via-[#084A2E] to-[#04331F] relative overflow-hidden">
+      {/* Decorative ambient background glows */}
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-md bg-white border border-slate-200/80 rounded-2xl shadow-xl p-8 relative z-10">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-white/20 p-8 sm:p-10 relative z-10">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-8">
           <img
             src="/brand/logo-full.png"
-            alt="Haziniy Learning Center"
-            className="h-16 w-auto object-contain mb-3"
+            alt="Haziniy ilm maskani"
+            className="h-16 w-auto object-contain mb-4 select-none drop-shadow-sm"
           />
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">
             CEFR Multilevel Speaking Mock
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-1.5 font-medium">
             O'qituvchilar va ma'muriyat uchun boshqaruv tizimi
           </p>
         </div>

@@ -16,7 +16,12 @@ export const metadata: Metadata = {
   title: "Haziniy Speaking Mock — CEFR Multilevel",
   description: "Haziniy Learning Center CEFR Multilevel Speaking Mock Test Platform",
   icons: {
-    icon: "/brand/favicon.png",
+    icon: [
+      { url: "/brand/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/brand/logo-mark.png", sizes: "64x64", type: "image/png" },
+    ],
+    shortcut: "/brand/favicon.png",
+    apple: "/brand/logo-mark.png",
   },
 };
 

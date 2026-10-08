@@ -34,8 +34,8 @@ export function Navbar({ user }: NavbarProps) {
           <Link href="/mocks" className="flex items-center gap-3">
             <img
               src="/brand/logo-full.png"
-              alt="Haziniy Learning Center"
-              className="h-10 w-auto object-contain"
+              alt="Haziniy ilm maskani"
+              className="h-11 w-auto object-contain select-none"
             />
           </Link>
 

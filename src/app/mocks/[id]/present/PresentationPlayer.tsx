@@ -507,12 +507,12 @@ export function PresentationPlayer({ mock }: { mock: MockData }) {
           </div>
         </div>
 
-        {/* Top Right: Haziniy Mark Logo */}
+        {/* Top Right: Haziniy Logo */}
         <div className="flex items-center gap-3">
           <img
-            src="/brand/logo-mark.png"
-            alt="Haziniy Learning Center"
-            className="h-10 w-10 object-contain drop-shadow-sm"
+            src="/brand/logo-full.png"
+            alt="Haziniy ilm maskani"
+            className="h-9 w-auto object-contain drop-shadow-sm select-none"
           />
         </div>
       </header>
