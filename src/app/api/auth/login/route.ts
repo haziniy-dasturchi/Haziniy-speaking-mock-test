@@ -65,10 +65,15 @@ export async function POST(request: Request) {
         role: user.role,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { error: "Tizimga kirishda xatolik yuz berdi" },
+      {
+        error:
+          error?.message?.includes("database") || error?.message?.includes("connect")
+            ? "Ma'lumotlar bazasiga ulanishda xatolik yuz berdi. DATABASE_URL to'g'riligini tekshiring."
+            : error?.message || "Tizimga kirishda xatolik yuz berdi",
+      },
       { status: 500 }
     );
   }

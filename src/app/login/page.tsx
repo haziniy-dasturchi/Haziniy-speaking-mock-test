@@ -31,16 +31,28 @@ export default function LoginPage() {
         }),
       });
 
-      const data = await res.json();
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        // response was not JSON
+      }
+
       if (!res.ok) {
-        setErrorMessage(data.error || "Login yoki parol noto'g'ri");
+        if (res.status === 500) {
+          setErrorMessage(
+            "Server xatoligi (500): Vercel'da DATABASE_URL o'rnatilmagan yoki ma'lumotlar bazasiga ulanib bo'lmadi."
+          );
+        } else {
+          setErrorMessage(data?.error || "Login yoki parol noto'g'ri");
+        }
         return;
       }
 
       router.push("/mocks");
       router.refresh();
-    } catch {
-      setErrorMessage("Tarmoq xatoligi yuz berdi. Qayta urinib ko'ring.");
+    } catch (err: any) {
+      setErrorMessage(err?.message || "Tarmoq xatoligi yuz berdi. Qayta urinib ko'ring.");
     } finally {
       setIsLoading(false);
     }
