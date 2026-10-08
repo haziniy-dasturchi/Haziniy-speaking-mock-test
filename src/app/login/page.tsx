@@ -56,9 +56,9 @@ export default function LoginPage() {
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-8">
           <img
-            src="/brand/logo-full.svg"
+            src="/brand/logo-full.png"
             alt="Haziniy Learning Center"
-            className="h-16 w-auto mb-3"
+            className="h-16 w-auto object-contain mb-3"
           />
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">
             CEFR Multilevel Speaking Mock

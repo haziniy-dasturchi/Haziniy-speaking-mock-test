@@ -510,7 +510,7 @@ export function PresentationPlayer({ mock }: { mock: MockData }) {
         {/* Top Right: Haziniy Mark Logo */}
         <div className="flex items-center gap-3">
           <img
-            src="/brand/logo-mark.svg"
+            src="/brand/logo-mark.png"
             alt="Haziniy Learning Center"
             className="h-10 w-10 object-contain drop-shadow-sm"
           />
@@ -523,9 +523,9 @@ export function PresentationPlayer({ mock }: { mock: MockData }) {
         {phase === "LOADING" && (
           <div className="text-center max-w-md w-full">
             <img
-              src="/brand/logo-full.svg"
+              src="/brand/logo-full.png"
               alt="Haziniy"
-              className="h-16 mx-auto mb-6"
+              className="h-16 mx-auto mb-6 object-contain"
             />
             <h2 className="text-xl font-bold text-slate-800 mb-2">
               Imtihon materiallari yuklanmoqda...
@@ -549,9 +549,9 @@ export function PresentationPlayer({ mock }: { mock: MockData }) {
         {phase === "START" && (
           <div className="bg-white border border-slate-200/90 rounded-3xl shadow-xl p-10 md:p-14 text-center max-w-2xl w-full">
             <img
-              src="/brand/logo-full.svg"
+              src="/brand/logo-full.png"
               alt="Haziniy Learning Center"
-              className="h-20 mx-auto mb-8"
+              className="h-20 mx-auto mb-8 object-contain"
             />
             <div className="inline-block px-3.5 py-1 rounded-full bg-emerald-50 text-[#0B4F37] font-bold text-xs uppercase tracking-widest border border-emerald-200 mb-4">
               {mock.levelLabel} Multilevel Speaking Mock
@@ -862,9 +862,9 @@ export function PresentationPlayer({ mock }: { mock: MockData }) {
             </p>
 
             <img
-              src="/brand/logo-full.svg"
+              src="/brand/logo-full.png"
               alt="Haziniy"
-              className="h-14 mx-auto mb-8"
+              className="h-14 mx-auto mb-8 object-contain"
             />
 
             <div className="flex items-center justify-center gap-3">

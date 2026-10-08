@@ -33,9 +33,9 @@ export function Navbar({ user }: NavbarProps) {
         <div className="flex items-center gap-8">
           <Link href="/mocks" className="flex items-center gap-3">
             <img
-              src="/brand/logo-full.svg"
+              src="/brand/logo-full.png"
               alt="Haziniy Learning Center"
-              className="h-10 w-auto"
+              className="h-10 w-auto object-contain"
             />
           </Link>
 
