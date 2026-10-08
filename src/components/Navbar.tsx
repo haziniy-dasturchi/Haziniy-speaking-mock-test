@@ -1,13 +1,65 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BookOpen, Users, LogOut, Layers } from "lucide-react";
 import { SessionPayload } from "@/lib/auth/session";
 
 interface NavbarProps {
   user: SessionPayload;
+}
+
+function NavLinks({ isAdmin, pathname }: { isAdmin: boolean; pathname: string }) {
+  const searchParams = useSearchParams();
+  const scope = searchParams.get("scope");
+  const isMocksPage = pathname === "/mocks";
+  const isAllMocks = isMocksPage && scope === "all";
+  const isMyMocks = isMocksPage && scope !== "all";
+
+  return (
+    <nav className="hidden md:flex items-center gap-1.5 text-sm font-medium">
+      <Link
+        href="/mocks"
+        className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
+          isMyMocks
+            ? "bg-[#0B4F37] text-white shadow-sm font-semibold"
+            : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+        }`}
+      >
+        <BookOpen className="w-4 h-4" />
+        <span>Mening mocklarim</span>
+      </Link>
+
+      {isAdmin && (
+        <>
+          <Link
+            href="/mocks?scope=all"
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
+              isAllMocks
+                ? "bg-[#0B4F37] text-white shadow-sm font-semibold"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Barcha mocklar</span>
+          </Link>
+
+          <Link
+            href="/admin/teachers"
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
+              pathname.startsWith("/admin/teachers")
+                ? "bg-[#0B4F37] text-white shadow-sm font-semibold"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>O'qituvchilar</span>
+          </Link>
+        </>
+      )}
+    </nav>
+  );
 }
 
 export function Navbar({ user }: NavbarProps) {
@@ -39,48 +91,10 @@ export function Navbar({ user }: NavbarProps) {
             />
           </Link>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1.5 text-sm font-medium">
-            <Link
-              href="/mocks"
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
-                pathname === "/mocks"
-                  ? "bg-[#0B4F37] text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>Mening mocklarim</span>
-            </Link>
-
-            {isAdmin && (
-              <>
-                <Link
-                  href="/mocks?scope=all"
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
-                    pathname === "/mocks" && typeof window !== "undefined" && window.location.search.includes("scope=all")
-                      ? "bg-[#0B4F37] text-white shadow-sm"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  }`}
-                >
-                  <Layers className="w-4 h-4" />
-                  <span>Barcha mocklar</span>
-                </Link>
-
-                <Link
-                  href="/admin/teachers"
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
-                    pathname.startsWith("/admin/teachers")
-                      ? "bg-[#0B4F37] text-white shadow-sm"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  }`}
-                >
-                  <Users className="w-4 h-4" />
-                  <span>O'qituvchilar</span>
-                </Link>
-              </>
-            )}
-          </nav>
+          {/* Navigation Links wrapped in Suspense */}
+          <Suspense fallback={null}>
+            <NavLinks isAdmin={isAdmin} pathname={pathname} />
+          </Suspense>
         </div>
 
         {/* User Info & Logout */}

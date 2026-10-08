@@ -11,6 +11,7 @@ import {
   Trash2,
   Calendar,
   Layers,
+  BookOpen,
   Sparkles,
   AlertTriangle,
   Loader2,
@@ -145,6 +146,34 @@ export function MocksDashboard({
 
   return (
     <div>
+      {/* Admin in-page scope switcher */}
+      {user.role === "admin" && (
+        <div className="flex items-center gap-2 mb-6 p-1 bg-slate-200/70 w-fit rounded-xl">
+          <Link
+            href="/mocks"
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${
+              !isAllScope
+                ? "bg-white text-[#0B4F37] shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Mening mocklarim</span>
+          </Link>
+          <Link
+            href="/mocks?scope=all"
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${
+              isAllScope
+                ? "bg-white text-[#0B4F37] shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Barcha mocklar</span>
+          </Link>
+        </div>
+      )}
+
       {/* Top Banner & Action */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
@@ -165,7 +194,7 @@ export function MocksDashboard({
 
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="flex items-center justify-center gap-2 bg-[#0B4F37] hover:bg-[#083B29] text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm hover:shadow transition"
+          className="flex items-center justify-center gap-2 bg-[#0B4F37] hover:bg-[#083B29] text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm hover:shadow transition cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Yangi mock yaratish</span>

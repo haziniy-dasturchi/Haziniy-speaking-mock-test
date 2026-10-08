@@ -68,6 +68,7 @@ export default async function MocksPage({
         <Navbar user={session} />
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <MocksDashboard
+            key={isAllScope ? "all" : "my"}
             user={session}
             initialMocks={serializedMocks}
             isAllScope={isAllScope}
