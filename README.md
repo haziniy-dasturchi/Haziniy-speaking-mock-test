@@ -190,3 +190,4 @@ npm run cf-preview
 ```
 
 > **Eslatma:** Cloudflare Dashboard-da o'z loyihangizning **Settings -> Variables and Secrets** bo'limiga `.env` dagi barcha o'zgaruvchilarni (`DATABASE_URL`, `SESSION_SECRET`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`) qo'shishni unutmang.
+# Haziniy-speaking-mock-test
