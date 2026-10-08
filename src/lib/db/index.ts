@@ -1,5 +1,10 @@
 import * as schema from "./schema";
 
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require("dotenv").config();
+} catch {}
+
 const databaseUrl = process.env.DATABASE_URL || "";
 const isNeonConfigured =
   databaseUrl.startsWith("postgres") &&

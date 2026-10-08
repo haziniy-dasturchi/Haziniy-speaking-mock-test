@@ -11,62 +11,72 @@ async function main() {
   console.log("🌱 Initializing and seeding Haziniy Speaking Mock database...");
 
   // If using local PGlite, access underlying client to create tables
-  try {
-    const rawClient = (db as any).session?.client || (db as any).client;
-    if (rawClient) {
-      console.log("Creating tables with DDL...");
-      const ddlStatements = [
-        `CREATE TABLE IF NOT EXISTS users (
-          id TEXT PRIMARY KEY,
-          full_name TEXT NOT NULL,
-          login TEXT NOT NULL UNIQUE,
-          password_hash TEXT NOT NULL,
-          role TEXT NOT NULL DEFAULT 'teacher',
-          is_active BOOLEAN NOT NULL DEFAULT true,
-          created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
-        )`,
-        `CREATE TABLE IF NOT EXISTS mocks (
-          id TEXT PRIMARY KEY,
-          owner_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-          title TEXT NOT NULL,
-          level_label TEXT NOT NULL DEFAULT 'B1–C1',
-          status TEXT NOT NULL DEFAULT 'draft',
-          created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-          updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
-        )`,
-        `CREATE TABLE IF NOT EXISTS parts (
-          id TEXT PRIMARY KEY,
-          mock_id TEXT NOT NULL REFERENCES mocks(id) ON DELETE CASCADE,
-          "order" INTEGER NOT NULL,
-          type TEXT NOT NULL,
-          display_label TEXT NOT NULL,
-          instruction_text TEXT NOT NULL,
-          instruction_audio_url TEXT,
-          instruction_audio_public_id TEXT,
-          default_prep_seconds INTEGER NOT NULL,
-          default_answer_seconds INTEGER NOT NULL
-        )`,
-        `CREATE TABLE IF NOT EXISTS questions (
-          id TEXT PRIMARY KEY,
-          part_id TEXT NOT NULL REFERENCES parts(id) ON DELETE CASCADE,
-          "order" INTEGER NOT NULL,
-          text TEXT NOT NULL DEFAULT '',
-          audio_url TEXT,
-          audio_public_id TEXT,
-          image_urls JSONB DEFAULT '[]'::jsonb,
-          prep_seconds INTEGER,
-          answer_seconds INTEGER,
-          topic TEXT,
-          for_points JSONB DEFAULT '[]'::jsonb,
-          against_points JSONB DEFAULT '[]'::jsonb
-        )`
-      ];
+  const ddlStatements = [
+    `CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      full_name TEXT NOT NULL,
+      login TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'teacher',
+      is_active BOOLEAN NOT NULL DEFAULT true,
+      created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    )`,
+    `CREATE TABLE IF NOT EXISTS mocks (
+      id TEXT PRIMARY KEY,
+      owner_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      title TEXT NOT NULL,
+      level_label TEXT NOT NULL DEFAULT 'B1–C1',
+      status TEXT NOT NULL DEFAULT 'draft',
+      created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    )`,
+    `CREATE TABLE IF NOT EXISTS parts (
+      id TEXT PRIMARY KEY,
+      mock_id TEXT NOT NULL REFERENCES mocks(id) ON DELETE CASCADE,
+      "order" INTEGER NOT NULL,
+      type TEXT NOT NULL,
+      display_label TEXT NOT NULL,
+      instruction_text TEXT NOT NULL,
+      instruction_audio_url TEXT,
+      instruction_audio_public_id TEXT,
+      default_prep_seconds INTEGER NOT NULL,
+      default_answer_seconds INTEGER NOT NULL
+    )`,
+    `CREATE TABLE IF NOT EXISTS questions (
+      id TEXT PRIMARY KEY,
+      part_id TEXT NOT NULL REFERENCES parts(id) ON DELETE CASCADE,
+      "order" INTEGER NOT NULL,
+      text TEXT NOT NULL DEFAULT '',
+      audio_url TEXT,
+      audio_public_id TEXT,
+      image_urls JSONB DEFAULT '[]'::jsonb,
+      prep_seconds INTEGER,
+      answer_seconds INTEGER,
+      topic TEXT,
+      for_points JSONB DEFAULT '[]'::jsonb,
+      against_points JSONB DEFAULT '[]'::jsonb
+    )`
+  ];
 
+  try {
+    const dbUrl = process.env.DATABASE_URL || "";
+    if (dbUrl.startsWith("postgres") && !dbUrl.includes("ep-sample-pooler")) {
+      console.log("Connecting to Neon cloud database and creating tables...");
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { neon } = require("@neondatabase/serverless");
+      const sql = neon(dbUrl);
       for (const statement of ddlStatements) {
-        if (typeof rawClient.exec === "function") {
-          await rawClient.exec(statement);
-        } else if (typeof rawClient.query === "function") {
-          await rawClient.query(statement);
+        await (sql as any).query(statement);
+      }
+    } else {
+      const rawClient = (db as any).session?.client || (db as any).client;
+      if (rawClient) {
+        for (const statement of ddlStatements) {
+          if (typeof rawClient.exec === "function") {
+            await rawClient.exec(statement);
+          } else if (typeof rawClient.query === "function") {
+            await rawClient.query(statement);
+          }
         }
       }
     }
