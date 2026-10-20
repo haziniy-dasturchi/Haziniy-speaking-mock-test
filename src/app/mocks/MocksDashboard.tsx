@@ -37,6 +37,15 @@ interface MockItem {
   questionCount?: number;
 }
 
+interface TemplateItem {
+  id: string;
+  title: string;
+  levelLabel: string;
+  summary: string;
+  taskCount: number;
+  usesSamplePictures: boolean;
+}
+
 interface MocksDashboardProps {
   user: SessionPayload;
   initialMocks: MockItem[];
@@ -63,16 +72,36 @@ export function MocksDashboard({
   // Duplicating state
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
 
-  // Creating from the built-in exam template
-  const [isCreatingFromTemplate, setIsCreatingFromTemplate] = useState(false);
+  // Creating from a built-in exam template
+  const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false);
+  const [templates, setTemplates] = useState<TemplateItem[]>([]);
+  const [isLoadingTemplates, setIsLoadingTemplates] = useState(false);
+  const [creatingTemplateId, setCreatingTemplateId] = useState<string | null>(null);
 
-  const handleCreateFromTemplate = async () => {
+  const openTemplatePicker = async () => {
+    setIsTemplatePickerOpen(true);
+    if (templates.length > 0) return;
+
     try {
-      setIsCreatingFromTemplate(true);
+      setIsLoadingTemplates(true);
+      const res = await fetch("/api/mocks/from-template");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Shablonlarni yuklashda xatolik");
+      setTemplates(data.templates || []);
+    } catch (err: any) {
+      showToast(err.message, "error");
+    } finally {
+      setIsLoadingTemplates(false);
+    }
+  };
+
+  const handleCreateFromTemplate = async (templateId: string) => {
+    try {
+      setCreatingTemplateId(templateId);
       const res = await fetch("/api/mocks/from-template", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ templateId: "multilevel-standard-1" }),
+        body: JSON.stringify({ templateId }),
       });
 
       const data = await res.json();
@@ -86,7 +115,7 @@ export function MocksDashboard({
     } catch (err: any) {
       showToast(err.message, "error");
     } finally {
-      setIsCreatingFromTemplate(false);
+      setCreatingTemplateId(null);
     }
   };
 
@@ -196,16 +225,11 @@ export function MocksDashboard({
 
         <div className="flex items-center gap-2.5">
           <button
-            onClick={handleCreateFromTemplate}
-            disabled={isCreatingFromTemplate}
-            className="flex items-center justify-center gap-2 bg-white hover:bg-emerald-50 text-[#0B4F37] border border-emerald-300 px-4 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition cursor-pointer disabled:opacity-60"
-            title="Rasmiy imtihon tartibidagi 8 topshiriqli tayyor shablon"
+            onClick={openTemplatePicker}
+            className="flex items-center justify-center gap-2 bg-white hover:bg-emerald-50 text-[#0B4F37] border border-emerald-300 px-4 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition cursor-pointer"
+            title="Rasmiy imtihon tartibidagi 8 topshiriqli tayyor shablonlar"
           >
-            {isCreatingFromTemplate ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Wand2 className="w-4 h-4" />
-            )}
+            <Wand2 className="w-4 h-4" />
             <span>Shablondan yaratish</span>
           </button>
 
@@ -344,6 +368,86 @@ export function MocksDashboard({
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Template Picker Modal */}
+      {isTemplatePickerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl max-w-2xl w-full p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">Tayyor shablonlar</h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Rasmiy imtihon tartibidagi to&apos;liq to&apos;plamni bir bosishda yarating
+                </p>
+              </div>
+              <button
+                onClick={() => setIsTemplatePickerOpen(false)}
+                className="text-slate-400 hover:text-slate-600 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-3 max-h-[60vh] overflow-y-auto">
+              {isLoadingTemplates && (
+                <div className="flex items-center justify-center py-8 text-slate-400">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                </div>
+              )}
+
+              {!isLoadingTemplates &&
+                templates.map((template) => (
+                  <div
+                    key={template.id}
+                    className="border border-slate-200 rounded-xl p-4 hover:border-emerald-300 transition flex flex-col sm:flex-row sm:items-center gap-3"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <h4 className="text-sm font-bold text-slate-900">
+                          {template.title}
+                        </h4>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-emerald-50 text-[#0B4F37] border border-emerald-100">
+                          {template.levelLabel}
+                        </span>
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                          {template.taskCount} topshiriq
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        {template.summary}
+                      </p>
+                      {template.usesSamplePictures && (
+                        <p className="text-[11px] text-amber-700 mt-1.5">
+                          Rasmlar namuna sifatida qo&apos;yilgan — o&apos;z rasmlaringizga
+                          almashtiring.
+                        </p>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => handleCreateFromTemplate(template.id)}
+                      disabled={creatingTemplateId !== null}
+                      className="flex items-center justify-center gap-2 bg-[#0B4F37] hover:bg-[#083B29] text-white px-4 py-2.5 rounded-xl font-semibold text-xs shadow-sm transition disabled:opacity-60 shrink-0"
+                    >
+                      {creatingTemplateId === template.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Wand2 className="w-4 h-4" />
+                      )}
+                      <span>Yaratish</span>
+                    </button>
+                  </div>
+                ))}
+
+              {!isLoadingTemplates && templates.length === 0 && (
+                <p className="text-sm text-slate-400 text-center py-8">
+                  Shablonlar topilmadi.
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       )}
 

@@ -38,7 +38,7 @@ const SPORT_PICTURES: QuestionImageItem[] = [
  */
 export const SPORTS_AND_FAILURE_TEMPLATE: MockTemplate = {
   id: "multilevel-standard-1",
-  title: "Multilevel Speaking Mock — Standart shablon",
+  title: "Multilevel Speaking Mock #1 — Standart shablon",
   levelLabel: "B1–C1",
   summary:
     "8 ta topshiriq: Part 1.1 (3 ta savol), Part 1.2 (2 ta rasm + 3 ta savol), Part 2 (1 ta rasm + 3 ta savol), Part 3 (FOR/AGAINST mavzusi).",
@@ -106,7 +106,89 @@ export const SPORTS_AND_FAILURE_TEMPLATE: MockTemplate = {
   ],
 };
 
-export const MOCK_TEMPLATES: MockTemplate[] = [SPORTS_AND_FAILURE_TEMPLATE];
+const NAVIGATION_PICTURES: QuestionImageItem[] = [
+  { url: "/sample/paper-map.svg", public_id: "sample_paper_map" },
+  { url: "/sample/phone-navigation.svg", public_id: "sample_phone_navigation" },
+];
+
+/**
+ * Second full 8-task exam: neighbourhood and friends (Part 1.1), paper map vs
+ * GPS (Part 1.2), a happy memory (Part 2) and free public transport (Part 3).
+ */
+export const NAVIGATION_AND_HAPPINESS_TEMPLATE: MockTemplate = {
+  id: "multilevel-standard-2",
+  title: "Multilevel Speaking Mock #2 — Standart shablon",
+  levelLabel: "B1–C1",
+  summary:
+    "8 ta topshiriq: uy-joy va do'stlar, qog'oz xarita va GPS taqqoslovi, baxtli xotira hamda bepul jamoat transporti mavzusi.",
+  usesSamplePictures: true,
+  parts: [
+    {
+      type: "part1_1",
+      questions: [
+        { text: "Can you describe your neighborhood?" },
+        { text: "Tell me about a close friend you have." },
+        { text: "What do you usually do at home in the evening?" },
+      ],
+    },
+    {
+      type: "part1_2",
+      questions: [
+        {
+          text: "What do you see in these pictures?",
+          imageUrls: NAVIGATION_PICTURES,
+        },
+        {
+          text: "What are some advantages of using a paper map instead of GPS?",
+          imageUrls: NAVIGATION_PICTURES,
+        },
+        {
+          text: "Why do most people prefer digital navigation today?",
+          imageUrls: NAVIGATION_PICTURES,
+        },
+      ],
+    },
+    {
+      type: "part2",
+      questions: [
+        {
+          text: [
+            "1. Tell me about a time when you felt truly happy.",
+            "2. How did this experience shape your personal view of life?",
+            "3. What are the key factors that contribute to happiness in society?",
+          ].join("\n"),
+          imageUrls: [
+            { url: "/sample/happiness.svg", public_id: "sample_happiness" },
+          ],
+        },
+      ],
+    },
+    {
+      type: "part3",
+      questions: [
+        {
+          topic: "Public transport should be free for everyone.",
+          text: "Public transport should be free for everyone.",
+          forPoints: [
+            "Encourages more people to use eco-friendly transportation",
+            "Reduces traffic congestion in cities",
+            "Improves access for low-income individuals",
+          ],
+          againstPoints: [
+            "High cost of maintaining public transport systems without fare revenue",
+            "Overcrowding and misuse of services",
+            "Less incentive to keep services efficient and punctual",
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const MOCK_TEMPLATES: MockTemplate[] = [
+  SPORTS_AND_FAILURE_TEMPLATE,
+  NAVIGATION_AND_HAPPINESS_TEMPLATE,
+];
 
 export function findTemplate(id: string): MockTemplate | undefined {
   return MOCK_TEMPLATES.find((template) => template.id === id);

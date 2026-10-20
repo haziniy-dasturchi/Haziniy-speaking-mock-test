@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="A happy woman with her arms open wide on a city walkway">
+  <defs>
+    <linearGradient id="skyJoy" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F6C98B"/>
+      <stop offset="55%" stop-color="#FBE3C2"/>
+      <stop offset="100%" stop-color="#FDF3E6"/>
+    </linearGradient>
+    <linearGradient id="walkway" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CBC4BA"/>
+      <stop offset="100%" stop-color="#9C958B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#skyJoy)"/>
+  <circle cx="400" cy="250" r="110" fill="#FFF0D4" opacity="0.75"/>
+
+  <!-- overpass / bridge above -->
+  <path d="M0 0 H800 V120 Q400 190 0 120 Z" fill="#8E8880"/>
+  <path d="M0 120 Q400 190 800 120 V150 Q400 220 0 150 Z" fill="#6F6961"/>
+
+  <!-- distant buildings -->
+  <g fill="#BFB6AA">
+    <rect x="50" y="250" width="90" height="170"/>
+    <rect x="660" y="230" width="100" height="190"/>
+  </g>
+
+  <!-- walkway -->
+  <path d="M0 420 H800 V600 H0 Z" fill="url(#walkway)"/>
+  <path d="M250 600 L360 420 H440 L550 600 Z" fill="#B6AEA3"/>
+  <g stroke="#8B847B" stroke-width="4">
+    <line x1="0" y1="470" x2="800" y2="470"/>
+    <line x1="0" y1="530" x2="800" y2="530"/>
+  </g>
+
+  <!-- happy person, arms open -->
+  <g transform="translate(400 250)">
+    <!-- open arms -->
+    <rect x="-200" y="10" width="150" height="30" rx="15" fill="#E8B183" transform="rotate(-22 -200 10)"/>
+    <rect x="52" y="-4" width="150" height="30" rx="15" fill="#E8B183" transform="rotate(22 52 -4)"/>
+
+    <circle cx="0" cy="-10" r="48" fill="#E8B183"/>
+    <path d="M-50 -22 a50 50 0 0 1 100 0 q-14 -54 -50 -54 t-50 54 z" fill="#2B211B"/>
+    <path d="M-56 -26 q-16 60 0 104 q-28 -6 -36 -40 q-6 -42 36 -64 z" fill="#2B211B"/>
+    <path d="M56 -26 q16 60 0 104 q28 -6 36 -40 q6 -42 -36 -64 z" fill="#2B211B"/>
+
+    <!-- smile -->
+    <path d="M-16 2 q16 16 32 0" stroke="#7A4A2E" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+    <!-- body -->
+    <path d="M-56 42 q56 -18 112 0 l16 130 q-72 22 -144 0 z" fill="#F2F2F4"/>
+    <path d="M-72 44 q24 -14 30 -4 l10 128 q-26 6 -34 -8 z" fill="#5C6670"/>
+    <path d="M72 44 q-24 -14 -30 -4 l-10 128 q26 6 34 -8 z" fill="#5C6670"/>
+    <rect x="-52" y="172" width="104" height="120" rx="20" fill="#2F3744"/>
+  </g>
+
+  <text x="400" y="575" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#0B4F37">
+    Happiness — namuna rasm
+  </text>
+</svg>

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="A woman reading a paper map outdoors in a city">
+  <defs>
+    <linearGradient id="skyMap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#BFE2F2"/>
+      <stop offset="100%" stop-color="#EFF8FB"/>
+    </linearGradient>
+    <linearGradient id="pathMap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E4D7BF"/>
+      <stop offset="100%" stop-color="#C9B590"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#skyMap)"/>
+
+  <!-- city skyline -->
+  <g fill="#C9A98C">
+    <rect x="40" y="170" width="110" height="230" rx="6"/>
+    <rect x="165" y="220" width="90" height="180" rx="6"/>
+    <rect x="620" y="150" width="120" height="250" rx="6"/>
+  </g>
+  <g fill="#A98B6E">
+    <rect x="62" y="200" width="22" height="26"/><rect x="100" y="200" width="22" height="26"/>
+    <rect x="62" y="250" width="22" height="26"/><rect x="100" y="250" width="22" height="26"/>
+    <rect x="645" y="190" width="24" height="28"/><rect x="690" y="190" width="24" height="28"/>
+    <rect x="645" y="245" width="24" height="28"/><rect x="690" y="245" width="24" height="28"/>
+  </g>
+
+  <!-- cypress trees -->
+  <g fill="#2F6B4A">
+    <ellipse cx="300" cy="250" rx="26" ry="90"/>
+    <ellipse cx="360" cy="270" rx="22" ry="72"/>
+    <ellipse cx="560" cy="255" rx="24" ry="84"/>
+  </g>
+
+  <!-- paved path -->
+  <rect y="400" width="800" height="200" fill="url(#pathMap)"/>
+  <g stroke="#B3A082" stroke-width="3" opacity="0.8">
+    <line x1="0" y1="450" x2="800" y2="450"/>
+    <line x1="0" y1="510" x2="800" y2="510"/>
+    <line x1="140" y1="400" x2="110" y2="600"/>
+    <line x1="420" y1="400" x2="420" y2="600"/>
+    <line x1="690" y1="400" x2="720" y2="600"/>
+  </g>
+
+  <!-- woman holding an open paper map -->
+  <g transform="translate(400 250)">
+    <circle cx="0" cy="-30" r="46" fill="#8B5A3C"/>
+    <path d="M-50 -46 a50 50 0 0 1 100 0 q-18 -46 -50 -46 t-50 46 z" fill="#241A14"/>
+    <path d="M-54 -40 q-10 58 6 96 q24 10 48 0 q16 -38 6 -96 z" fill="#241A14"/>
+    <rect x="-54" y="22" width="108" height="130" rx="26" fill="#7FB4E0"/>
+    <rect x="-50" y="150" width="100" height="120" rx="14" fill="#2A2A33"/>
+
+    <!-- arms -->
+    <rect x="-96" y="60" width="54" height="26" rx="13" fill="#8B5A3C" transform="rotate(16 -96 60)"/>
+    <rect x="44" y="58" width="54" height="26" rx="13" fill="#8B5A3C" transform="rotate(-16 44 58)"/>
+
+    <!-- the open map -->
+    <g transform="translate(-80 78)">
+      <path d="M0 0 L78 -10 L158 2 L158 86 L78 76 L0 88 Z" fill="#FBF7EC" stroke="#C9BFA6" stroke-width="3"/>
+      <line x1="78" y1="-10" x2="78" y2="76" stroke="#D8CEB6" stroke-width="3"/>
+      <g stroke="#E0574B" stroke-width="4" fill="none">
+        <path d="M14 56 q28 -26 54 -8 q26 18 52 -14"/>
+      </g>
+      <g stroke="#7FA7C9" stroke-width="3" fill="none">
+        <path d="M10 22 q40 10 76 -6 q34 -14 62 6"/>
+      </g>
+      <circle cx="118" cy="40" r="6" fill="#E0574B"/>
+    </g>
+  </g>
+
+  <text x="400" y="568" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#0B4F37">
+    Paper map — namuna rasm
+  </text>
+</svg>
