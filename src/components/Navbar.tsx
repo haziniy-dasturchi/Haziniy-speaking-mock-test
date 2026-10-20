@@ -31,32 +31,30 @@ function NavLinks({ isAdmin, pathname }: { isAdmin: boolean; pathname: string })
         <span>Mening mocklarim</span>
       </Link>
 
-      {isAdmin && (
-        <>
-          <Link
-            href="/mocks?scope=all"
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
-              isAllMocks
-                ? "bg-[#0B4F37] text-white shadow-sm font-semibold"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>Barcha mocklar</span>
-          </Link>
+      <Link
+        href="/mocks?scope=all"
+        className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
+          isAllMocks
+            ? "bg-[#0B4F37] text-white shadow-sm font-semibold"
+            : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+        }`}
+      >
+        <Layers className="w-4 h-4" />
+        <span>Barcha mocklar</span>
+      </Link>
 
-          <Link
-            href="/admin/teachers"
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
-              pathname.startsWith("/admin/teachers")
-                ? "bg-[#0B4F37] text-white shadow-sm font-semibold"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span>O'qituvchilar</span>
-          </Link>
-        </>
+      {isAdmin && (
+        <Link
+          href="/admin/teachers"
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg transition ${
+            pathname.startsWith("/admin/teachers")
+              ? "bg-[#0B4F37] text-white shadow-sm font-semibold"
+              : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>O'qituvchilar</span>
+        </Link>
       )}
     </nav>
   );

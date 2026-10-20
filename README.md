@@ -18,11 +18,21 @@ Ushbu platforma orqali o'qituvchilar real kompyuter-asosidagi CEFR Multilevel Sp
   - Javob berish bosqichida jonli vizual soundwave (ovoz to'lqini) animatsiyasi.
   - Imtihon o'rtasida to'xtab qolmasligi uchun barcha media fayllarni oldindan to'liq xotiraga yuklash (Preloading).
   - O'qituvchi boshqaruv paneli (Pause/Resume, Keyingi, Oldingi, Qayta boshlash, To'liq ekran) va klaviatura yorliqlari.
+- **Universal topshiriq konstruktori:**
+  - Har bir topshiriqqa **1 tadan 4 tagacha rasm** qo'shish mumkin (istalgan bo'limda) — rasmlar soni avtomatik moslashadi: 1 ta katta, 2 ta yonma-yon, 3-4 ta katak ko'rinishida.
+  - **Savol matni ixtiyoriy:** agar savol rasmning o'zida yozilgan bo'lsa, matnni bo'sh qoldirish mumkin.
+  - Matn yozilgan va audio yuklanmagan bo'lsa, savolni **AI ovoz (TTS)** barcha bo'limlarda avtomatik o'qib beradi.
+  - Part 3 uchun FOR/AGAINST dalillari sonini erkin o'zgartirish (1 tadan 6 tagacha).
+  - **Tayyor shablon:** "Shablondan yaratish" tugmasi rasmiy imtihon tartibidagi 8 topshiriqli to'liq mockni bir zumda yaratadi.
 - **Rasmiy 4 ta imtihon bo'limi:**
-  - **Part 1.1:** 3 ta qisqa shaxsiy savol (5s prep, 30s answer).
-  - **Part 1.2:** 2 ta yonma-yon rasm va savollar (5s prep, 30s answer).
-  - **Part 2:** 1 ta asosiy rasm va bir vaqtning o'zida ko'rsatiladigan 3 ta savol (60s prep, 120s answer).
-  - **Part 3:** Mavzu bayonoti (Topic) + FOR (3 ta dalil) va AGAINST (3 ta dalil) jadvallari (60s prep, 120s answer).
+  - **Part 1.1:** qisqa shaxsiy savollar (5s prep, 30s answer).
+  - **Part 1.2:** rasm(lar) asosidagi savollar (5s prep, 30s answer).
+  - **Part 2:** rasm va 3 ta savol birgalikda (60s prep, 120s answer).
+  - **Part 3:** Mavzu bayonoti (Topic) + FOR va AGAINST jadvallari (60s prep, 120s answer).
+- **Fayllarni saqlash (HTTP 500 muammosisiz):**
+  - Rasm va audio fayllar sukut bo'yicha **ma'lumotlar bazasida** saqlanadi va `/api/media/<id>` orqali uzatiladi — Vercel va Cloudflare kabi "read-only" serverlarda ham ishlaydi.
+  - Rasm brauzerda yuklashdan oldin avtomatik siqiladi (maks. 1600px) — 10 MB lik telefon rasmi ~100-300 KB ga tushadi.
+  - Cloudinary kalitlari to'g'ri kiritilgan bo'lsa, fayllar avtomatik Cloudinary'ga yuklanadi (ixtiyoriy).
 - **Xavfsiz va tezkor arxitektura:**
   - Web Crypto PBKDF2-SHA256 parol xeshlash (Cloudflare Workers bepul rejasidagi CPU limitlariga to'liq mos).
   - Imzolangan HTTP-only sessiya kukisi (`jose` JWT).
@@ -95,13 +105,19 @@ ADMIN_PASSWORD=HaziniyAdmin2026!
 3. Dashboard-da berilgan **Connection string** (Postgres URL) ni nusxalab oling.
 4. `.env` faylidagi `DATABASE_URL` parametriga qo'ying (`?sslmode=require` bilan).
 
-### 2. Cloudinary (Rasm va audio saqlash)
+### 2. Cloudinary (IXTIYORIY — rasm va audio saqlash)
+Fayllar sukut bo'yicha ma'lumotlar bazasida saqlanadi, shuning uchun Cloudinary **shart emas**.
+Agar katta hajmdagi media uchun CDN kerak bo'lsa:
 1. [cloudinary.com](https://cloudinary.com) saytidan bepul hisob oching.
 2. Dashboard-dan quyidagi 3 ta parametrni oling:
    - **Cloud Name** -> `CLOUDINARY_CLOUD_NAME`
    - **API Key** -> `CLOUDINARY_API_KEY`
    - **API Secret** -> `CLOUDINARY_API_SECRET`
 3. Ushbu qiymatlarni `.env` fayliga yozing.
+
+> **Muhim:** kalitlar noto'g'ri bo'lsa tizim xatolik bermaydi — avtomatik ravishda
+> bazaga saqlashga qaytadi. Holatni `POST /api/upload/sign` javobidagi
+> `configured: true | false` qiymatidan bilish mumkin.
 
 ### 3. Cloudflare (Domen va bepul joylashtirish)
 1. [cloudflare.com](https://cloudflare.com) saytidan bepul hisob oching.
@@ -121,7 +137,7 @@ npm run db:seed
 ```
 
 Ushbu buyruq:
-1. `users`, `mocks`, `parts` va `questions` jadvallarini avtomatik barpo etadi.
+1. `users`, `mocks`, `parts`, `questions` va `media` jadvallarini avtomatik barpo etadi.
 2. `.env` dagi `ADMIN_LOGIN` va `ADMIN_PASSWORD` bo'yicha boshqaruvchi (Admin) hisobini yaratadi.
 
 ---
@@ -148,18 +164,26 @@ Brauzerda oching: [http://localhost:3000](http://localhost:3000)
    - Login (masalan: `rustam_teacher`)
    - Parol (kamida 6 ta belgi)
 4. Yaratilgan hisob ma'lumotlarini o'qituvchiga taqdim eting.
-5. O'qituvchi o'z logini bilan kirganda faqat o'ziga tegishli mock testlarni ko'radi, tahrirlaydi va ishga tushiradi.
+
+### Ruxsatlar tartibi
+- Har bir o'qituvchi **"Barcha mocklar"** bo'limida markazdagi hamma mock testlarni ko'radi,
+  ularni darsda ishga tushira oladi va o'ziga nusxa olishi mumkin.
+- **Tahrirlash va o'chirish** faqat o'zi yaratgan mocklarga ruxsat etiladi
+  (admin esa barchasini tahrirlay oladi). Boshqa o'qituvchining mocki "Faqat ko'rish"
+  yorlig'i bilan belgilanadi.
 
 ---
 
 ## 🎯 Mock Test yaratish va Presentation Mode
 
 1. **"Yangi mock yaratish"** tugmasini bosing (Sarlavha va darajani belgilang, masalan: `CEFR Mock #1`, `B1–C1`).
-2. Har bir qism uchun savollarni kiriting:
-   - **Part 1.1:** 3 ta shaxsiy savol matni va audiosi.
-   - **Part 1.2:** 2 ta rasmni yuklang va taqqoslash savolini yozing.
-   - **Part 2:** 1 ta asosiy rasm va 3 ta savol matni.
-   - **Part 3:** Mavzu bayonoti, 3 ta "Points FOR" va 3 ta "Points AGAINST" bandlari.
+   Yoki **"Shablondan yaratish"** tugmasini bosib, rasmiy imtihon tartibidagi
+   8 topshiriqli tayyor mockni oling va faqat rasm/matnlarni almashtiring.
+2. Har bir qism uchun topshiriqlarni kiriting:
+   - Savol matni — **ixtiyoriy** (savol rasm ichida bo'lsa bo'sh qoldiring).
+   - Rasmlar — har bir topshiriqqa **0 tadan 4 tagacha**.
+   - Audio — ixtiyoriy; yuklanmasa matnni AI ovoz o'qiydi.
+   - **Part 3:** Mavzu bayonoti hamda "Points FOR" va "Points AGAINST" bandlari.
 3. Test to'liq tayyor bo'lgach, **"Tayyor deb belgilash"** tugmasini bosing (tizim barcha rasmlar va savollar to'liqligini avtomatik tekshiradi).
 4. **"Ishga tushirish"** yoki **"Ko'rish (Preview)"** tugmasini bosib proyektorda darsni boshlang!
 

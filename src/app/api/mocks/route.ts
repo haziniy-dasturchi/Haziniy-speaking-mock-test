@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const scopeAll = searchParams.get("scope") === "all";
 
-    if (scopeAll && session.role === "admin") {
+    if (scopeAll) {
       const allMocks = await db
         .select({
           id: mocks.id,

@@ -10,6 +10,7 @@ async function sha1Hex(str: string): Promise<string> {
 }
 
 export interface UploadSignatureResponse {
+  configured: true;
   timestamp: number;
   signature: string;
   apiKey: string;
@@ -17,12 +18,66 @@ export interface UploadSignatureResponse {
   folder: string;
 }
 
+function readCredentials() {
+  return {
+    cloudName: (process.env.CLOUDINARY_CLOUD_NAME || "").trim(),
+    apiKey: (process.env.CLOUDINARY_API_KEY || "").trim(),
+    apiSecret: (process.env.CLOUDINARY_API_SECRET || "").trim(),
+  };
+}
+
+const PLACEHOLDER_VALUES = new Set([
+  "your_cloud_name",
+  "your_api_key",
+  "your_api_secret",
+  "123456789012345",
+]);
+
+/** True when all three Cloudinary variables are present and not example values. */
+export function hasCloudinaryCredentials(): boolean {
+  const { cloudName, apiKey, apiSecret } = readCredentials();
+  if (!cloudName || !apiKey || !apiSecret) return false;
+  return ![cloudName, apiKey, apiSecret].some((v) => PLACEHOLDER_VALUES.has(v));
+}
+
+let credentialCheck: Promise<boolean> | null = null;
+
+/**
+ * Verifies the credentials against Cloudinary once per server instance.
+ * Wrong keys used to surface much later as an opaque upload failure; checking
+ * here lets the client fall back to database storage immediately instead.
+ */
+export async function verifyCloudinaryCredentials(): Promise<boolean> {
+  if (!hasCloudinaryCredentials()) return false;
+
+  if (!credentialCheck) {
+    credentialCheck = (async () => {
+      const { cloudName, apiKey, apiSecret } = readCredentials();
+      try {
+        const auth = `Basic ${btoa(`${apiKey}:${apiSecret}`)}`;
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/ping`, {
+          headers: { Authorization: auth },
+        });
+        if (!res.ok) {
+          console.warn(
+            `Cloudinary credentials rejected (HTTP ${res.status}) — using database media storage.`
+          );
+        }
+        return res.ok;
+      } catch (err) {
+        console.warn("Cloudinary reachability check failed:", err);
+        return false;
+      }
+    })();
+  }
+
+  return credentialCheck;
+}
+
 export async function generateUploadSignature(
   folder = "haziniy_speaking_mock"
 ): Promise<UploadSignatureResponse> {
-  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || "";
-  const apiKey = process.env.CLOUDINARY_API_KEY || "";
-  const apiSecret = process.env.CLOUDINARY_API_SECRET || "";
+  const { cloudName, apiKey, apiSecret } = readCredentials();
 
   if (!cloudName || !apiKey || !apiSecret) {
     throw new Error("Cloudinary environment variables are missing");
@@ -36,6 +91,7 @@ export async function generateUploadSignature(
   const signature = await sha1Hex(paramsToSign);
 
   return {
+    configured: true,
     timestamp,
     signature,
     apiKey,
@@ -49,9 +105,7 @@ export async function deleteCloudinaryAsset(
   resourceType: "image" | "video" = "image"
 ): Promise<boolean> {
   try {
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || "";
-    const apiKey = process.env.CLOUDINARY_API_KEY || "";
-    const apiSecret = process.env.CLOUDINARY_API_SECRET || "";
+    const { cloudName, apiKey, apiSecret } = readCredentials();
 
     if (!cloudName || !apiKey || !apiSecret || !publicId) {
       return false;

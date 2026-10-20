@@ -6,6 +6,7 @@ import { users, mocks, parts, questions } from "./schema";
 import { hashPassword } from "../auth/password";
 import { eq } from "drizzle-orm";
 import { DEFAULT_PARTS_CONFIG } from "../constants/defaults";
+import { SPORTS_AND_FAILURE_TEMPLATE } from "../constants/templates";
 
 async function main() {
   console.log("🌱 Initializing and seeding Haziniy Speaking Mock database...");
@@ -41,6 +42,16 @@ async function main() {
       instruction_audio_public_id TEXT,
       default_prep_seconds INTEGER NOT NULL,
       default_answer_seconds INTEGER NOT NULL
+    )`,
+    `CREATE TABLE IF NOT EXISTS media (
+      id TEXT PRIMARY KEY,
+      owner_id TEXT,
+      kind TEXT NOT NULL DEFAULT 'image',
+      mime_type TEXT NOT NULL,
+      filename TEXT,
+      byte_size INTEGER NOT NULL DEFAULT 0,
+      data TEXT NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
     )`,
     `CREATE TABLE IF NOT EXISTS questions (
       id TEXT PRIMARY KEY,
@@ -138,137 +149,55 @@ async function main() {
     console.log(`ℹ️ O'qituvchi allaqachon mavjud: ${teacherLogin}`);
   }
 
-  // 3. Ensure a complete ready sample mock test
+  // 3. Ensure a complete sample mock built from the official exam template
   const existingMocks = await db.select().from(mocks).limit(1);
   if (existingMocks.length === 0) {
-    console.log("Creating standard sample CEFR Multilevel Speaking Mock...");
+    console.log("Creating the standard CEFR Multilevel Speaking Mock template...");
+
+    const template = SPORTS_AND_FAILURE_TEMPLATE;
     const mockId = crypto.randomUUID();
+
     await db.insert(mocks).values({
       id: mockId,
       ownerId: teacherId,
-      title: "CEFR Multilevel Speaking Mock #1 (Official Format)",
-      levelLabel: "B1–C1",
-      status: "ready",
+      title: "Multilevel Speaking Mock #1 (Namuna)",
+      levelLabel: template.levelLabel,
+      status: "draft",
     });
 
-    // Create 4 parts
-    // Part 1.1
-    const p1_1_id = crypto.randomUUID();
-    await db.insert(parts).values({
-      id: p1_1_id,
-      mockId,
-      order: 1,
-      type: "part1_1",
-      displayLabel: "Part 1.1",
-      instructionText: DEFAULT_PARTS_CONFIG[0].instructionText,
-      defaultPrepSeconds: 5,
-      defaultAnswerSeconds: 30,
-    });
+    for (const partConfig of DEFAULT_PARTS_CONFIG) {
+      const partId = crypto.randomUUID();
+      await db.insert(parts).values({
+        id: partId,
+        mockId,
+        order: partConfig.order,
+        type: partConfig.type,
+        displayLabel: partConfig.displayLabel,
+        instructionText: partConfig.instructionText,
+        defaultPrepSeconds: partConfig.defaultPrepSeconds,
+        defaultAnswerSeconds: partConfig.defaultAnswerSeconds,
+      });
 
-    await db.insert(questions).values([
-      {
-        id: crypto.randomUUID(),
-        partId: p1_1_id,
-        order: 1,
-        text: "Can you tell me about your hometown and what makes it special?",
-        imageUrls: [],
-      },
-      {
-        id: crypto.randomUUID(),
-        partId: p1_1_id,
-        order: 2,
-        text: "What do you usually enjoy doing in your free time?",
-        imageUrls: [],
-      },
-      {
-        id: crypto.randomUUID(),
-        partId: p1_1_id,
-        order: 3,
-        text: "Do you prefer spending your holidays with your family or friends? Why?",
-        imageUrls: [],
-      },
-    ]);
+      const templatePart = template.parts.find((p) => p.type === partConfig.type);
+      if (!templatePart) continue;
 
-    // Part 1.2
-    const p1_2_id = crypto.randomUUID();
-    await db.insert(parts).values({
-      id: p1_2_id,
-      mockId,
-      order: 2,
-      type: "part1_2",
-      displayLabel: "Part 1.2",
-      instructionText: DEFAULT_PARTS_CONFIG[1].instructionText,
-      defaultPrepSeconds: 5,
-      defaultAnswerSeconds: 30,
-    });
+      for (const [index, question] of templatePart.questions.entries()) {
+        await db.insert(questions).values({
+          id: crypto.randomUUID(),
+          partId,
+          order: index + 1,
+          text: question.text || "",
+          imageUrls: question.imageUrls || [],
+          prepSeconds: question.prepSeconds ?? null,
+          answerSeconds: question.answerSeconds ?? null,
+          topic: question.topic ?? null,
+          forPoints: question.forPoints || [],
+          againstPoints: question.againstPoints || [],
+        });
+      }
+    }
 
-    await db.insert(questions).values({
-      id: crypto.randomUUID(),
-      partId: p1_2_id,
-      order: 1,
-      text: "Compare these two pictures showing different ways of studying (studying alone vs in a group). Which way do you find more productive, and why?",
-      imageUrls: [
-        { url: "/sample/study-alone.svg", public_id: "sample_study_alone" },
-        { url: "/sample/study-group.svg", public_id: "sample_study_group" },
-      ],
-    });
-
-    // Part 2
-    const p2_id = crypto.randomUUID();
-    await db.insert(parts).values({
-      id: p2_id,
-      mockId,
-      order: 3,
-      type: "part2",
-      displayLabel: "Part 2",
-      instructionText: DEFAULT_PARTS_CONFIG[2].instructionText,
-      defaultPrepSeconds: 60,
-      defaultAnswerSeconds: 120,
-    });
-
-    await db.insert(questions).values({
-      id: crypto.randomUUID(),
-      partId: p2_id,
-      order: 1,
-      text: "1. Describe what is happening in the picture.\n2. Why do you think people celebrate traditional holidays and gatherings together?\n3. Tell me about a memorable family celebration or festival you attended.",
-      imageUrls: [
-        { url: "/sample/celebration.svg", public_id: "sample_celebration" },
-      ],
-    });
-
-    // Part 3
-    const p3_id = crypto.randomUUID();
-    await db.insert(parts).values({
-      id: p3_id,
-      mockId,
-      order: 4,
-      type: "part3",
-      displayLabel: "Part 3",
-      instructionText: DEFAULT_PARTS_CONFIG[3].instructionText,
-      defaultPrepSeconds: 60,
-      defaultAnswerSeconds: 120,
-    });
-
-    await db.insert(questions).values({
-      id: crypto.randomUUID(),
-      partId: p3_id,
-      order: 1,
-      text: "Some people believe that online education will completely replace traditional schools and universities in the future.",
-      topic: "Some people believe that online education will completely replace traditional schools and universities in the future.",
-      forPoints: [
-        "Flexible schedule and self-paced learning from anywhere in the world",
-        "Direct access to worldwide top universities and digital resources",
-        "Cost-effective with lower tuition, commute, and accommodation fees",
-      ],
-      againstPoints: [
-        "Lack of direct face-to-face social interaction and teamwork skills",
-        "Requires high self-discipline; students can be easily distracted",
-        "Practical laboratory experiments and hands-on skills are hard to conduct online",
-      ],
-      imageUrls: [],
-    });
-
-    console.log("✅ Namuna CEFR Mock test tayyorlandi va 'ready' holatga o'tkazildi!");
+    console.log("✅ Namuna mock test shablon asosida tayyorlandi (8 ta topshiriq).");
   }
 
   console.log("🎉 Baza to'liq muvaffaqiyatli tayyorlandi!");

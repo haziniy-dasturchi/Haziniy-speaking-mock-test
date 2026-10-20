@@ -20,7 +20,9 @@ export default async function MocksPage({
   }
 
   const resolvedParams = await searchParams;
-  const isAllScope = resolvedParams.scope === "all" && session.role === "admin";
+  // Every signed-in teacher may browse the whole centre's mock library;
+  // editing and deleting stay restricted to the owner (and admins).
+  const isAllScope = resolvedParams.scope === "all";
 
   let mockList: any[] = [];
 

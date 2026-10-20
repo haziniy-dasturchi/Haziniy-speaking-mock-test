@@ -4,7 +4,7 @@ import { parts, mocks } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "@/lib/auth/session";
 import { updatePartSchema } from "@/lib/validations/mock";
-import { deleteCloudinaryAsset } from "@/lib/cloudinary";
+import { deleteStoredAsset } from "@/lib/media-cleanup";
 
 export async function PATCH(
   request: Request,
@@ -48,18 +48,28 @@ export async function PATCH(
       parsed.data.instructionAudioPublicId !== undefined &&
       parsed.data.instructionAudioPublicId !== part.instructionAudioPublicId
     ) {
-      await deleteCloudinaryAsset(part.instructionAudioPublicId, "video");
+      await deleteStoredAsset(part.instructionAudioPublicId, "video");
+    }
+
+    const updateData: Partial<typeof parts.$inferInsert> = {};
+    if (parsed.data.instructionText !== undefined)
+      updateData.instructionText = parsed.data.instructionText;
+    if (parsed.data.instructionAudioUrl !== undefined)
+      updateData.instructionAudioUrl = parsed.data.instructionAudioUrl;
+    if (parsed.data.instructionAudioPublicId !== undefined)
+      updateData.instructionAudioPublicId = parsed.data.instructionAudioPublicId;
+    if (parsed.data.defaultPrepSeconds !== undefined)
+      updateData.defaultPrepSeconds = parsed.data.defaultPrepSeconds;
+    if (parsed.data.defaultAnswerSeconds !== undefined)
+      updateData.defaultAnswerSeconds = parsed.data.defaultAnswerSeconds;
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ success: true, part });
     }
 
     const updated = await db
       .update(parts)
-      .set({
-        instructionText: parsed.data.instructionText,
-        instructionAudioUrl: parsed.data.instructionAudioUrl,
-        instructionAudioPublicId: parsed.data.instructionAudioPublicId,
-        defaultPrepSeconds: parsed.data.defaultPrepSeconds,
-        defaultAnswerSeconds: parsed.data.defaultAnswerSeconds,
-      })
+      .set(updateData)
       .where(eq(parts.id, id))
       .returning();
 

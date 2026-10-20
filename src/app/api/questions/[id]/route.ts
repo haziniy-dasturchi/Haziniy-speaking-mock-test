@@ -4,7 +4,7 @@ import { questions, parts, mocks } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "@/lib/auth/session";
 import { questionSchema } from "@/lib/validations/mock";
-import { deleteCloudinaryAsset } from "@/lib/cloudinary";
+import { deleteStoredAsset } from "@/lib/media-cleanup";
 
 export async function PATCH(
   request: Request,
@@ -50,7 +50,7 @@ export async function PATCH(
       parsed.data.audioPublicId !== undefined &&
       parsed.data.audioPublicId !== question.audioPublicId
     ) {
-      await deleteCloudinaryAsset(question.audioPublicId, "video");
+      await deleteStoredAsset(question.audioPublicId, "video");
     }
 
     // Images cleanup if any removed
@@ -58,7 +58,7 @@ export async function PATCH(
       const newPublicIds = new Set(parsed.data.imageUrls.map((img) => img.public_id));
       for (const oldImg of question.imageUrls) {
         if (oldImg.public_id && !newPublicIds.has(oldImg.public_id)) {
-          await deleteCloudinaryAsset(oldImg.public_id, "image");
+          await deleteStoredAsset(oldImg.public_id, "image");
         }
       }
     }
@@ -121,14 +121,14 @@ export async function DELETE(
 
     // Clean up audio
     if (question.audioPublicId) {
-      await deleteCloudinaryAsset(question.audioPublicId, "video");
+      await deleteStoredAsset(question.audioPublicId, "video");
     }
 
     // Clean up images
     if (question.imageUrls && Array.isArray(question.imageUrls)) {
       for (const img of question.imageUrls) {
         if (img.public_id) {
-          await deleteCloudinaryAsset(img.public_id, "image");
+          await deleteStoredAsset(img.public_id, "image");
         }
       }
     }

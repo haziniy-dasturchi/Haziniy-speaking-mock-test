@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="A group exercise class in a gym studio">
+  <defs>
+    <linearGradient id="wallIn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FDF6E9"/>
+      <stop offset="100%" stop-color="#F3E7D2"/>
+    </linearGradient>
+    <linearGradient id="floorIn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E0B987"/>
+      <stop offset="100%" stop-color="#C79A64"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#wallIn)"/>
+  <rect y="410" width="800" height="190" fill="url(#floorIn)"/>
+
+  <!-- studio windows -->
+  <g fill="#DCEEF6" stroke="#C4D9E4" stroke-width="6">
+    <rect x="60" y="70" width="150" height="200" rx="10"/>
+    <rect x="590" y="70" width="150" height="200" rx="10"/>
+  </g>
+  <g stroke="#C4D9E4" stroke-width="6">
+    <line x1="135" y1="70" x2="135" y2="270"/>
+    <line x1="665" y1="70" x2="665" y2="270"/>
+  </g>
+
+  <!-- mirror wall strip -->
+  <rect x="250" y="90" width="300" height="180" rx="10" fill="#EAF2F5" stroke="#D5E2E8" stroke-width="5"/>
+
+  <!-- class members, arms raised -->
+  <g>
+    <g transform="translate(220 300)">
+      <circle cx="0" cy="0" r="24" fill="#F0C49C"/>
+      <rect x="-22" y="28" width="44" height="80" rx="20" fill="#2F4F6B"/>
+      <rect x="-20" y="104" width="40" height="70" rx="16" fill="#1B2A3A"/>
+      <rect x="-50" y="-36" width="16" height="60" rx="8" fill="#F0C49C" transform="rotate(22 -50 -36)"/>
+      <rect x="34" y="-36" width="16" height="60" rx="8" fill="#F0C49C" transform="rotate(-22 34 -36)"/>
+    </g>
+
+    <g transform="translate(340 290)">
+      <circle cx="0" cy="0" r="26" fill="#D8A074"/>
+      <path d="M-26 -8 a26 26 0 0 1 52 0 z" fill="#E7E7EA"/>
+      <rect x="-24" y="30" width="48" height="86" rx="22" fill="#14323F"/>
+      <rect x="-22" y="112" width="44" height="74" rx="17" fill="#0E1F29"/>
+      <rect x="-54" y="-40" width="17" height="64" rx="8" fill="#D8A074" transform="rotate(20 -54 -40)"/>
+      <rect x="37" y="-40" width="17" height="64" rx="8" fill="#D8A074" transform="rotate(-20 37 -40)"/>
+    </g>
+
+    <g transform="translate(470 296)">
+      <circle cx="0" cy="0" r="25" fill="#F2C49B"/>
+      <path d="M-25 -10 a25 25 0 0 1 50 0 z" fill="#C9CDD4"/>
+      <rect x="-23" y="29" width="46" height="82" rx="21" fill="#4B6A86"/>
+      <rect x="-21" y="107" width="42" height="72" rx="16" fill="#243445"/>
+      <rect x="-52" y="-38" width="16" height="62" rx="8" fill="#F2C49B" transform="rotate(24 -52 -38)"/>
+      <rect x="36" y="-38" width="16" height="62" rx="8" fill="#F2C49B" transform="rotate(-24 36 -38)"/>
+    </g>
+
+    <g transform="translate(590 302)">
+      <circle cx="0" cy="0" r="23" fill="#E3B183"/>
+      <rect x="-21" y="27" width="42" height="78" rx="19" fill="#355E4C"/>
+      <rect x="-19" y="101" width="38" height="68" rx="15" fill="#1C3328"/>
+      <rect x="-48" y="-34" width="15" height="58" rx="7" fill="#E3B183" transform="rotate(21 -48 -34)"/>
+      <rect x="33" y="-34" width="15" height="58" rx="7" fill="#E3B183" transform="rotate(-21 33 -34)"/>
+    </g>
+  </g>
+
+  <text x="400" y="560" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#0B4F37">
+    Indoor sport — namuna rasm
+  </text>
+</svg>

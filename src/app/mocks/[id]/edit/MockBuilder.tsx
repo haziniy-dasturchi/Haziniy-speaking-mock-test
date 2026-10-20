@@ -23,7 +23,10 @@ import {
 } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import { MediaUploader } from "@/components/MediaUploader";
+import { ImageGalleryEditor, MAX_QUESTION_IMAGES } from "@/components/ImageGalleryEditor";
 import { QuestionImageItem } from "@/lib/db/schema";
+
+const BULLET = String.fromCharCode(10) + String.fromCharCode(8226) + " ";
 
 interface QuestionData {
   id: string;
@@ -127,7 +130,7 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          text: isPart3 ? "" : `Question ${currentPart.questions.length + 1}`,
+          text: "",
           forPoints: initialForPoints,
           againstPoints: initialAgainstPoints,
         }),
@@ -210,57 +213,91 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
     }
   };
 
-  // Save current changes to backend
-  const handleSave = async () => {
+  // Save every part and question of the mock to the backend
+  const handleSave = async (): Promise<boolean> => {
     try {
       setIsSaving(true);
 
-      // 1. Save mock details
-      await fetch(`/api/mocks/${mock.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: mock.title,
-          levelLabel: mock.levelLabel,
-        }),
-      });
+      const failures: string[] = [];
 
-      // 2. Save current part settings
-      await fetch(`/api/parts/${currentPart.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          instructionText: currentPart.instructionText,
-          instructionAudioUrl: currentPart.instructionAudioUrl,
-          instructionAudioPublicId: currentPart.instructionAudioPublicId,
-          defaultPrepSeconds: currentPart.defaultPrepSeconds,
-          defaultAnswerSeconds: currentPart.defaultAnswerSeconds,
-        }),
-      });
+      const check = async (res: Response, what: string) => {
+        if (res.ok) return;
+        let message = `HTTP ${res.status}`;
+        try {
+          const data = await res.json();
+          if (data?.error) message = data.error;
+        } catch {
+          /* response had no JSON body */
+        }
+        failures.push(`${what}: ${message}`);
+      };
 
-      // 3. Save all questions in current part
-      for (const q of currentPart.questions) {
-        await fetch(`/api/questions/${q.id}`, {
+      // 1. Mock details
+      await check(
+        await fetch(`/api/mocks/${mock.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            text: q.text,
-            audioUrl: q.audioUrl,
-            audioPublicId: q.audioPublicId,
-            imageUrls: q.imageUrls,
-            prepSeconds: q.prepSeconds,
-            answerSeconds: q.answerSeconds,
-            topic: q.topic,
-            forPoints: q.forPoints,
-            againstPoints: q.againstPoints,
+            title: mock.title,
+            levelLabel: mock.levelLabel,
           }),
-        });
+        }),
+        "Mock sarlavhasi"
+      );
+
+      // 2. Every part with all of its questions (not just the open tab)
+      for (const part of mock.parts) {
+        await check(
+          await fetch(`/api/parts/${part.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              instructionText: part.instructionText,
+              instructionAudioUrl: part.instructionAudioUrl,
+              instructionAudioPublicId: part.instructionAudioPublicId,
+              defaultPrepSeconds: part.defaultPrepSeconds,
+              defaultAnswerSeconds: part.defaultAnswerSeconds,
+            }),
+          }),
+          part.displayLabel
+        );
+
+        for (const [index, q] of part.questions.entries()) {
+          await check(
+            await fetch(`/api/questions/${q.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                text: q.text,
+                audioUrl: q.audioUrl,
+                audioPublicId: q.audioPublicId,
+                imageUrls: q.imageUrls,
+                prepSeconds: q.prepSeconds,
+                answerSeconds: q.answerSeconds,
+                topic: q.topic,
+                forPoints: q.forPoints,
+                againstPoints: q.againstPoints,
+              }),
+            }),
+            `${part.displayLabel} — ${index + 1}-topshiriq`
+          );
+        }
+      }
+
+      if (failures.length > 0) {
+        showToast(
+          "Ba'zi ma'lumotlar saqlanmadi:" + BULLET + failures.join(BULLET),
+          "error"
+        );
+        return false;
       }
 
       setHasUnsavedChanges(false);
       showToast("Barcha o'zgarishlar muvaffaqiyatli saqlandi!", "success");
+      return true;
     } catch (err: any) {
-      showToast(err.message || "Saqlashda xatolik yuz berdi", "error");
+      showToast(err?.message || "Saqlashda xatolik yuz berdi", "error");
+      return false;
     } finally {
       setIsSaving(false);
     }
@@ -272,8 +309,9 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
 
     try {
       setIsValidatingReady(true);
-      // Auto-save first
-      await handleSave();
+      // Auto-save first; a failed save must not be reported as "ready"
+      const saved = await handleSave();
+      if (!saved) return;
 
       const res = await fetch(`/api/mocks/${mock.id}`, {
         method: "PATCH",
@@ -518,7 +556,7 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
                 placeholder="Bo'lim ko'rsatmasi..."
               />
               <p className="text-[11px] text-slate-400 mt-1">
-                Agar audio fayl yuklanmasa, ushbu matn brauzer nutq sintezatori (TTS) orqali avtomatik o'qib beriladi.
+                Agar audio fayl yuklanmasa, ushbu matnni AI ovoz (TTS) avtomatik o'qib beradi.
               </p>
             </div>
 
@@ -527,7 +565,7 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
               <MediaUploader
                 resourceType="video"
                 label="Yo'riqnoma audiosi (Audio File)"
-                sublabel="Ixtiyoriy (yuklanmasa TTS ishlaydi)"
+                sublabel="Ixtiyoriy (yuklanmasa AI ovoz o'qiydi)"
                 valueUrl={currentPart.instructionAudioUrl}
                 valuePublicId={currentPart.instructionAudioPublicId}
                 onUploadComplete={(res) =>
@@ -557,11 +595,11 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
               {currentPart.type === "part1_1" &&
                 "Part 1.1 da odatda 3 ta qisqa matnli savol bo'ladi (tayyorgarlik 5s, javob 30s)."}
               {currentPart.type === "part1_2" &&
-                "Part 1.2 da 2 ta rasm va ular asosidagi savollar beriladi (har bir savol alohida timer bilan)."}
+                "Part 1.2 da rasm(lar) va ular asosidagi savollar beriladi. Har bir topshiriqqa 1 tadan 4 tagacha rasm qo'shish mumkin."}
               {currentPart.type === "part2" &&
-                "Part 2 da 1 ta rasm va 3 ta savol birdaniga ko'rsatiladi (tayyorgarlik 60s, javob 120s umumiy to'plamga)."}
+                "Part 2 da rasm va 3 ta savol birdaniga ko'rsatiladi (tayyorgarlik 60s, javob 120s umumiy to'plamga)."}
               {currentPart.type === "part3" &&
-                "Part 3 da muhokama mavzusi, 3 ta 'FOR' va 3 ta 'AGAINST' dalillari (tayyorgarlik 60s, javob 120s)."}
+                "Part 3 da muhokama mavzusi hamda 'FOR' va 'AGAINST' dalillari beriladi (tayyorgarlik 60s, javob 120s)."}
             </p>
           </div>
 
@@ -582,6 +620,13 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
         ) : (
           <div className="space-y-6">
             {currentPart.questions.map((question, qIndex) => {
+              // Tasks are numbered continuously across the exam (Topshiriq #1 ... #N)
+              const taskNumber =
+                mock.parts
+                  .filter((p) => p.order < currentPart.order)
+                  .reduce((total, p) => total + p.questions.length, 0) +
+                qIndex +
+                1;
               const isPart1_2 = currentPart.type === "part1_2";
               const isPart2 = currentPart.type === "part2";
               const isPart3 = currentPart.type === "part3";
@@ -595,10 +640,13 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
                   <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                       <span className="w-6 h-6 rounded-lg bg-emerald-100 text-[#0B4F37] font-bold text-xs flex items-center justify-center">
-                        {qIndex + 1}
+                        {taskNumber}
                       </span>
                       <span className="text-xs font-bold text-slate-700">
-                        {isPart3 ? "Part 3 Mavzusi" : `Savol #${qIndex + 1}`}
+                        {isPart3 ? `Topshiriq #${taskNumber} — Mavzu` : `Topshiriq #${taskNumber}`}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        ({currentPart.displayLabel} ichida {qIndex + 1}-o'rin)
                       </span>
                     </div>
 
@@ -653,68 +701,137 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* FOR POINTS */}
-                        <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl">
-                          <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                            Points FOR (Rozi fikrlar - 3 ta)
-                          </h4>
-                          {[0, 1, 2].map((idx) => (
-                            <div key={idx} className="mb-2">
-                              <input
-                                type="text"
-                                value={(question.forPoints || [])[idx] || ""}
-                                onChange={(e) => {
-                                  const currentPoints = [
-                                    ...(question.forPoints || ["", "", ""]),
-                                  ];
-                                  currentPoints[idx] = e.target.value;
-                                  updateQuestion(question.id, {
-                                    forPoints: currentPoints,
-                                  });
-                                }}
-                                placeholder={`FOR argument #${idx + 1}`}
-                                className="w-full p-2 bg-white border border-emerald-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-600"
-                              />
-                            </div>
-                          ))}
-                        </div>
+                        {(
+                          [
+                            {
+                              key: "forPoints" as const,
+                              title: "Points FOR (Rozi fikrlar)",
+                              accent: "emerald",
+                            },
+                            {
+                              key: "againstPoints" as const,
+                              title: "Points AGAINST (Qarshi fikrlar)",
+                              accent: "rose",
+                            },
+                          ]
+                        ).map(({ key, title, accent }) => {
+                          const points =
+                            (question[key] || []).length > 0
+                              ? question[key]
+                              : ["", "", ""];
 
-                        {/* AGAINST POINTS */}
-                        <div className="p-4 bg-rose-50/50 border border-rose-100 rounded-xl">
-                          <h4 className="text-xs font-bold text-rose-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-rose-500" />
-                            Points AGAINST (Qarshi fikrlar - 3 ta)
-                          </h4>
-                          {[0, 1, 2].map((idx) => (
-                            <div key={idx} className="mb-2">
-                              <input
-                                type="text"
-                                value={(question.againstPoints || [])[idx] || ""}
-                                onChange={(e) => {
-                                  const currentPoints = [
-                                    ...(question.againstPoints || ["", "", ""]),
-                                  ];
-                                  currentPoints[idx] = e.target.value;
-                                  updateQuestion(question.id, {
-                                    againstPoints: currentPoints,
-                                  });
-                                }}
-                                placeholder={`AGAINST argument #${idx + 1}`}
-                                className="w-full p-2 bg-white border border-rose-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-rose-600"
-                              />
+                          const setPoints = (next: string[]) =>
+                            updateQuestion(question.id, { [key]: next } as Partial<QuestionData>);
+
+                          return (
+                            <div
+                              key={key}
+                              className={`p-4 rounded-xl border ${
+                                accent === "emerald"
+                                  ? "bg-emerald-50/50 border-emerald-100"
+                                  : "bg-rose-50/50 border-rose-100"
+                              }`}
+                            >
+                              <h4
+                                className={`text-xs font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5 ${
+                                  accent === "emerald" ? "text-emerald-900" : "text-rose-900"
+                                }`}
+                              >
+                                <span
+                                  className={`w-2 h-2 rounded-full ${
+                                    accent === "emerald" ? "bg-emerald-500" : "bg-rose-500"
+                                  }`}
+                                />
+                                {title}
+                              </h4>
+
+                              {points.map((point, idx) => (
+                                <div key={idx} className="mb-2 flex items-center gap-1.5">
+                                  <input
+                                    type="text"
+                                    value={point}
+                                    onChange={(e) => {
+                                      const next = [...points];
+                                      next[idx] = e.target.value;
+                                      setPoints(next);
+                                    }}
+                                    placeholder={`${
+                                      accent === "emerald" ? "FOR" : "AGAINST"
+                                    } argument #${idx + 1}`}
+                                    className={`w-full p-2 bg-white border rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-1 ${
+                                      accent === "emerald"
+                                        ? "border-emerald-200 focus:ring-emerald-600"
+                                        : "border-rose-200 focus:ring-rose-600"
+                                    }`}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => setPoints(points.filter((_, i) => i !== idx))}
+                                    disabled={points.length <= 1}
+                                    className="p-1.5 text-slate-400 hover:text-rose-600 disabled:opacity-30 rounded-lg hover:bg-white"
+                                    title="Bandni o'chirish"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              ))}
+
+                              {points.length < 6 && (
+                                <button
+                                  type="button"
+                                  onClick={() => setPoints([...points, ""])}
+                                  className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-slate-600 hover:text-[#0B4F37] transition"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                  <span>Band qo'shish</span>
+                                </button>
+                              )}
                             </div>
-                          ))}
-                        </div>
+                          );
+                        })}
                       </div>
+
+                      <ImageGalleryEditor
+                        images={question.imageUrls || []}
+                        onChange={(images) =>
+                          updateQuestion(question.id, { imageUrls: images })
+                        }
+                        title="Mavzu rasmlari"
+                        hint="Ixtiyoriy — Part 3 uchun odatda rasm kerak emas"
+                      />
+
+                      <MediaUploader
+                        resourceType="video"
+                        label="Mavzu audiosi"
+                        sublabel="Ixtiyoriy (bo'sh bo'lsa matnni AI ovoz o'qiydi)"
+                        valueUrl={question.audioUrl}
+                        valuePublicId={question.audioPublicId}
+                        onUploadComplete={(res) =>
+                          updateQuestion(question.id, {
+                            audioUrl: res.url,
+                            audioPublicId: res.public_id,
+                          })
+                        }
+                        onRemove={() =>
+                          updateQuestion(question.id, {
+                            audioUrl: null,
+                            audioPublicId: null,
+                          })
+                        }
+                      />
                     </div>
                   ) : (
                     /* PART 1.1, PART 1.2, PART 2 */
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 mb-1">
-                          {isPart2 ? "Savollar matni (1, 2, 3 raqamlar bilan)" : "Savol matni"}
-                        </label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-xs font-semibold text-slate-700">
+                            {isPart2 ? "Savollar matni (1, 2, 3 raqamlar bilan)" : "Savol matni"}
+                          </label>
+                          <span className="text-[11px] text-slate-400">
+                            Ixtiyoriy - savol rasm ichida bo'lsa bo'sh qoldiring
+                          </span>
+                        </div>
                         <textarea
                           rows={isPart2 ? 4 : 2}
                           value={question.text}
@@ -724,82 +841,31 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
                           placeholder={
                             isPart2
                               ? "1. Describe the picture.\n2. Why do you think...\n3. Have you ever..."
-                              : "Savol matnini kiriting..."
+                              : "Savol matnini kiriting (ixtiyoriy)..."
                           }
                           className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0B4F37]"
                         />
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          Matn yozilsa va audio yuklanmasa, uni imtihon vaqtida AI ovoz (TTS) o'qib beradi.
+                        </p>
                       </div>
 
-                      {/* Images section for Part 1.2 and Part 2 */}
-                      {isPart1_2 && (
-                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold text-slate-700">
-                              Part 1.2 Rasmlari (Taqqoslovchi 2 ta rasm)
-                            </span>
-                            <span className="text-[11px] text-slate-400">
-                              (2 ta rasm yonma-yon chiqariladi)
-                            </span>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Image 1 */}
-                            <MediaUploader
-                              resourceType="image"
-                              label="1-Rasm"
-                              valueUrl={question.imageUrls?.[0]?.url}
-                              valuePublicId={question.imageUrls?.[0]?.public_id}
-                              onUploadComplete={(res) => {
-                                const list = [...(question.imageUrls || [])];
-                                list[0] = { url: res.url, public_id: res.public_id };
-                                updateQuestion(question.id, { imageUrls: list });
-                              }}
-                              onRemove={() => {
-                                const list = [...(question.imageUrls || [])];
-                                list.splice(0, 1);
-                                updateQuestion(question.id, { imageUrls: list });
-                              }}
-                            />
-
-                            {/* Image 2 */}
-                            <MediaUploader
-                              resourceType="image"
-                              label="2-Rasm"
-                              valueUrl={question.imageUrls?.[1]?.url}
-                              valuePublicId={question.imageUrls?.[1]?.public_id}
-                              onUploadComplete={(res) => {
-                                const list = [...(question.imageUrls || [])];
-                                list[1] = { url: res.url, public_id: res.public_id };
-                                updateQuestion(question.id, { imageUrls: list });
-                              }}
-                              onRemove={() => {
-                                const list = [...(question.imageUrls || [])];
-                                if (list.length > 1) list.splice(1, 1);
-                                updateQuestion(question.id, { imageUrls: list });
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {isPart2 && (
-                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                          <MediaUploader
-                            resourceType="image"
-                            label="Part 2 Rasmi (1 ta asosiy rasm)"
-                            valueUrl={question.imageUrls?.[0]?.url}
-                            valuePublicId={question.imageUrls?.[0]?.public_id}
-                            onUploadComplete={(res) => {
-                              updateQuestion(question.id, {
-                                imageUrls: [{ url: res.url, public_id: res.public_id }],
-                              });
-                            }}
-                            onRemove={() => {
-                              updateQuestion(question.id, { imageUrls: [] });
-                            }}
-                          />
-                        </div>
-                      )}
+                      {/* Universal picture gallery: 0 - 4 pictures for any part */}
+                      <ImageGalleryEditor
+                        images={question.imageUrls || []}
+                        onChange={(images) =>
+                          updateQuestion(question.id, { imageUrls: images })
+                        }
+                        max={MAX_QUESTION_IMAGES}
+                        title="Topshiriq rasmlari"
+                        hint={
+                          isPart1_2
+                            ? "Taqqoslash uchun odatda 2 ta rasm, lekin 1 tadan 4 tagacha mumkin"
+                            : isPart2
+                            ? "Odatda 1 ta asosiy rasm, lekin 4 tagacha qo'shsa bo'ladi"
+                            : "Ixtiyoriy - kerak bo'lsa 4 tagacha rasm qo'shing"
+                        }
+                      />
 
                       {/* Question Audio & Timer Overrides */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
@@ -807,7 +873,7 @@ export function MockBuilder({ initialMock }: { initialMock: MockData }) {
                           <MediaUploader
                             resourceType="video"
                             label="Savol audiosi"
-                            sublabel="Ixtiyoriy (bo'sh bo'lsa TTS o'qiydi)"
+                            sublabel="Ixtiyoriy (bo'sh bo'lsa AI ovoz o'qiydi)"
                             valueUrl={question.audioUrl}
                             valuePublicId={question.audioPublicId}
                             onUploadComplete={(res) =>

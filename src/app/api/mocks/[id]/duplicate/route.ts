@@ -23,9 +23,8 @@ export async function POST(
     }
 
     const originalMock = mockList[0];
-    if (session.role !== "admin" && originalMock.ownerId !== session.userId) {
-      return NextResponse.json({ error: "Ruxsat etilmagan" }, { status: 403 });
-    }
+    // The copy always belongs to the person who made it, so every teacher
+    // may duplicate any mock in the library.
 
     // 1. Create duplicate mock
     const newMockId = crypto.randomUUID();

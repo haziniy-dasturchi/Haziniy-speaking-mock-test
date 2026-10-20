@@ -18,6 +18,8 @@ import {
   X,
   ExternalLink,
   User,
+  Wand2,
+  Eye,
 } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import { SessionPayload } from "@/lib/auth/session";
@@ -60,6 +62,33 @@ export function MocksDashboard({
 
   // Duplicating state
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
+
+  // Creating from the built-in exam template
+  const [isCreatingFromTemplate, setIsCreatingFromTemplate] = useState(false);
+
+  const handleCreateFromTemplate = async () => {
+    try {
+      setIsCreatingFromTemplate(true);
+      const res = await fetch("/api/mocks/from-template", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ templateId: "multilevel-standard-1" }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Shablondan yaratishda xatolik");
+
+      showToast(
+        "Shablon asosida 8 topshiriqli mock test yaratildi. Namuna rasmlarni o'z rasmlaringizga almashtiring.",
+        "success"
+      );
+      router.push(`/mocks/${data.mock.id}/edit`);
+    } catch (err: any) {
+      showToast(err.message, "error");
+    } finally {
+      setIsCreatingFromTemplate(false);
+    }
+  };
 
   const handleCreateMock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,13 +194,29 @@ export function MocksDashboard({
           </p>
         </div>
 
-        <button
-          onClick={() => setIsCreateOpen(true)}
-          className="flex items-center justify-center gap-2 bg-[#0B4F37] hover:bg-[#083B29] text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm hover:shadow transition cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Yangi mock yaratish</span>
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleCreateFromTemplate}
+            disabled={isCreatingFromTemplate}
+            className="flex items-center justify-center gap-2 bg-white hover:bg-emerald-50 text-[#0B4F37] border border-emerald-300 px-4 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition cursor-pointer disabled:opacity-60"
+            title="Rasmiy imtihon tartibidagi 8 topshiriqli tayyor shablon"
+          >
+            {isCreatingFromTemplate ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Wand2 className="w-4 h-4" />
+            )}
+            <span>Shablondan yaratish</span>
+          </button>
+
+          <button
+            onClick={() => setIsCreateOpen(true)}
+            className="flex items-center justify-center gap-2 bg-[#0B4F37] hover:bg-[#083B29] text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm hover:shadow transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Yangi mock yaratish</span>
+          </button>
+        </div>
       </div>
 
       {/* Mocks Grid */}
@@ -184,7 +229,8 @@ export function MocksDashboard({
             Mock testlar mavjud emas
           </h3>
           <p className="text-sm text-slate-500 mb-6">
-            Darsda o'tkazish uchun yangi Speaking mock test to'plamini yarating.
+            Darsda o'tkazish uchun yangi Speaking mock test to'plamini yarating yoki
+            tayyor shablondan boshlang.
           </p>
           <button
             onClick={() => setIsCreateOpen(true)}
@@ -228,9 +274,17 @@ export function MocksDashboard({
                   </h3>
 
                   {isAllScope && mock.ownerName && (
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-3 font-medium">
-                      <User className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{mock.ownerName}</span>
+                    <div className="flex items-center gap-2 text-xs text-slate-500 mb-3 font-medium flex-wrap">
+                      <span className="flex items-center gap-1.5">
+                        <User className="w-3.5 h-3.5 text-slate-400" />
+                        {mock.ownerName}
+                      </span>
+                      {!isOwnerOrAdmin && (
+                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[11px] font-semibold">
+                          <Eye className="w-3 h-3" />
+                          Faqat ko&apos;rish
+                        </span>
+                      )}
                     </div>
                   )}
 

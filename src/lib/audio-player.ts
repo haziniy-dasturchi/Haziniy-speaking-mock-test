@@ -81,45 +81,135 @@ export async function playEndTone(): Promise<void> {
 }
 
 /**
- * Speaks text using browser SpeechSynthesis with fallback
+ * Chrome fills the voice list asynchronously; speaking before it is ready
+ * falls back to a robotic default voice, so wait for it once.
  */
-export function speakText(text: string): Promise<void> {
+function getVoices(): Promise<SpeechSynthesisVoice[]> {
   return new Promise((resolve) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      resolve();
+      resolve([]);
       return;
     }
 
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = 0.95; // Clear speaking rate
-
-    // Select natural English voice if available
-    const voices = window.speechSynthesis.getVoices();
-    const englishVoice = voices.find(
-      (v) => (v.lang.startsWith("en-GB") || v.lang.startsWith("en-US")) && !v.name.includes("whisper")
-    );
-    if (englishVoice) {
-      utterance.voice = englishVoice;
+    const available = window.speechSynthesis.getVoices();
+    if (available.length > 0) {
+      resolve(available);
+      return;
     }
 
-    utterance.onend = () => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      resolve(window.speechSynthesis.getVoices());
+    };
+
+    window.speechSynthesis.addEventListener("voiceschanged", finish, { once: true });
+    setTimeout(finish, 1200);
+  });
+}
+
+/** Prefers the natural sounding English voices shipped with the browser / OS. */
+function pickEnglishVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
+  const english = voices.filter((voice) => voice.lang?.toLowerCase().startsWith("en"));
+  if (english.length === 0) return null;
+
+  const preferred = [
+    /google uk english female/i,
+    /google us english/i,
+    /microsoft (aria|jenny|libby|sonia|ryan|guy).*natural/i,
+    /natural/i,
+    /google/i,
+    /samantha|daniel|karen/i,
+  ];
+
+  for (const pattern of preferred) {
+    const match = english.find((voice) => pattern.test(voice.name));
+    if (match) return match;
+  }
+
+  return (
+    english.find((voice) => /en-GB/i.test(voice.lang)) ||
+    english.find((voice) => /en-US/i.test(voice.lang)) ||
+    english[0]
+  );
+}
+
+/**
+ * Reads a question or an instruction aloud with the browser AI voice.
+ * Used whenever a task has text but no uploaded audio file.
+ */
+export async function speakText(text: string): Promise<void> {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+
+  const content = (text || "").trim();
+  if (!content) return;
+
+  const voices = await getVoices();
+  const voice = pickEnglishVoice(voices);
+
+  return new Promise((resolve) => {
+    window.speechSynthesis.cancel();
+
+    // Long passages are split into sentences: some browsers cut off a single
+    // very long utterance after ~15 seconds.
+    const chunks = content
+      .split(/(?<=[.!?])\s+|[\r\n]+/)
+      .map((chunk) => chunk.trim())
+      .filter(Boolean);
+
+    const queue = chunks.length > 0 ? chunks : [content];
+    let index = 0;
+    let settled = false;
+
+    const done = () => {
+      if (settled) return;
+      settled = true;
       resolve();
     };
 
-    utterance.onerror = () => {
-      resolve();
+    const speakNext = () => {
+      if (index >= queue.length) {
+        done();
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(queue[index]);
+      index += 1;
+      utterance.lang = voice?.lang || "en-US";
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      if (voice) utterance.voice = voice;
+
+      utterance.onend = () => speakNext();
+      utterance.onerror = () => done();
+
+      window.speechSynthesis.speak(utterance);
     };
 
-    window.speechSynthesis.speak(utterance);
+    speakNext();
   });
 }
 
 export function stopSpeaking(): void {
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     window.speechSynthesis.cancel();
+  }
+}
+
+export function pauseSpeaking(): void {
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+      window.speechSynthesis.pause();
+    }
+  }
+}
+
+export function resumeSpeaking(): void {
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
   }
 }
 

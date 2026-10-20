@@ -60,6 +60,17 @@ export const questions = pgTable("questions", {
   againstPoints: jsonb("against_points").$type<string[]>().default([]),
 });
 
+export const media = pgTable("media", {
+  id: text("id").primaryKey(),
+  ownerId: text("owner_id"),
+  kind: text("kind", { enum: ["image", "audio"] }).notNull().default("image"),
+  mimeType: text("mime_type").notNull(),
+  filename: text("filename"),
+  byteSize: integer("byte_size").notNull().default(0),
+  data: text("data").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   mocks: many(mocks),
@@ -95,4 +106,6 @@ export type NewMock = typeof mocks.$inferInsert;
 export type Part = typeof parts.$inferSelect;
 export type NewPart = typeof parts.$inferInsert;
 export type Question = typeof questions.$inferSelect;
+export type Media = typeof media.$inferSelect;
+export type NewMedia = typeof media.$inferInsert;
 export type NewQuestion = typeof questions.$inferInsert;

@@ -8,6 +8,13 @@
       "when": 1791348951049,
       "tag": "0000_curly_doctor_octopus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792516538033,
+      "tag": "0001_sweet_captain_cross",
+      "breakpoints": true
     }
   ]
 }

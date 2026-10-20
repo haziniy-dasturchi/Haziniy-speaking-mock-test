@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Two people jogging outdoors in a park">
+  <defs>
+    <linearGradient id="skyOut" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CFF0E2"/>
+      <stop offset="100%" stop-color="#F3FBF7"/>
+    </linearGradient>
+    <linearGradient id="groundOut" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8CC9A6"/>
+      <stop offset="100%" stop-color="#4E9B74"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#skyOut)"/>
+  <circle cx="650" cy="110" r="52" fill="#FBD36B"/>
+
+  <!-- trees -->
+  <g fill="#2F7D55">
+    <circle cx="110" cy="250" r="70"/>
+    <circle cx="160" cy="285" r="52"/>
+    <circle cx="690" cy="265" r="62"/>
+    <circle cx="640" cy="295" r="44"/>
+  </g>
+  <rect x="100" y="300" width="20" height="90" rx="8" fill="#7A5338"/>
+  <rect x="680" y="315" width="20" height="80" rx="8" fill="#7A5338"/>
+
+  <!-- ground + path -->
+  <path d="M0 400 H800 V600 H0 Z" fill="url(#groundOut)"/>
+  <path d="M120 600 C 260 470, 520 470, 700 400 L800 400 L800 600 Z" fill="#D9C7A3"/>
+
+  <!-- runner 1 -->
+  <g transform="translate(300 300)">
+    <circle cx="0" cy="0" r="26" fill="#F2C49B"/>
+    <path d="M-26 -6 a26 26 0 0 1 52 0 z" fill="#E8E8EC"/>
+    <rect x="-24" y="30" width="48" height="86" rx="22" fill="#F4F4F6"/>
+    <rect x="-22" y="112" width="44" height="74" rx="18" fill="#2B3A4A"/>
+    <rect x="-52" y="42" width="34" height="16" rx="8" fill="#F2C49B" transform="rotate(-28 -52 42)"/>
+    <rect x="20" y="40" width="34" height="16" rx="8" fill="#F2C49B" transform="rotate(26 20 40)"/>
+    <rect x="-40" y="178" width="42" height="16" rx="8" fill="#1E293B" transform="rotate(-14 -40 178)"/>
+    <rect x="6" y="182" width="44" height="16" rx="8" fill="#1E293B" transform="rotate(16 6 182)"/>
+  </g>
+
+  <!-- runner 2 -->
+  <g transform="translate(430 290)">
+    <circle cx="0" cy="0" r="28" fill="#D9A273"/>
+    <path d="M-28 -10 a28 28 0 0 1 56 0 z" fill="#2B2B33"/>
+    <rect x="-26" y="32" width="52" height="92" rx="24" fill="#20405E"/>
+    <rect x="-24" y="120" width="48" height="78" rx="18" fill="#17212E"/>
+    <rect x="-58" y="48" width="36" height="17" rx="8" fill="#D9A273" transform="rotate(24 -58 48)"/>
+    <rect x="22" y="44" width="36" height="17" rx="8" fill="#D9A273" transform="rotate(-24 22 44)"/>
+    <rect x="-44" y="190" width="44" height="17" rx="8" fill="#0F172A" transform="rotate(12 -44 190)"/>
+    <rect x="6" y="192" width="46" height="17" rx="8" fill="#0F172A" transform="rotate(-10 6 192)"/>
+  </g>
+
+  <text x="400" y="560" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#0B4F37">
+    Outdoor sport — namuna rasm
+  </text>
+</svg>

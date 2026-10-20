@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth/session";
-import { deleteCloudinaryAsset } from "@/lib/cloudinary";
+import { deleteStoredAsset } from "@/lib/media-cleanup";
 import { z } from "zod";
 
 const deleteAssetSchema = z.object({
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     const { publicId, resourceType } = parsed.data;
-    const ok = await deleteCloudinaryAsset(publicId, resourceType);
+    const ok = await deleteStoredAsset(publicId, resourceType);
     return NextResponse.json({ success: ok });
   } catch (err: any) {
     if (err.message?.includes("Unauthorized")) {

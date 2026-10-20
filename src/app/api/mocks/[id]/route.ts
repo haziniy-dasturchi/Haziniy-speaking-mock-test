@@ -4,7 +4,7 @@ import { mocks, parts, questions } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { requireAuth } from "@/lib/auth/session";
 import { updateMockSchema, validateMockReady } from "@/lib/validations/mock";
-import { deleteCloudinaryAsset } from "@/lib/cloudinary";
+import { deleteStoredAsset } from "@/lib/media-cleanup";
 
 export async function GET(
   request: Request,
@@ -25,9 +25,7 @@ export async function GET(
     }
 
     const mock = mockList[0];
-    if (session.role !== "admin" && mock.ownerId !== session.userId) {
-      return NextResponse.json({ error: "Ruxsat etilmagan" }, { status: 403 });
-    }
+    // Reading is open to every teacher; only changes are owner-restricted.
 
     // Load parts ordered
     const mockParts = await db
@@ -182,7 +180,7 @@ export async function DELETE(
     const mockParts = await db.select().from(parts).where(eq(parts.mockId, id));
     for (const part of mockParts) {
       if (part.instructionAudioPublicId) {
-        await deleteCloudinaryAsset(part.instructionAudioPublicId, "video");
+        await deleteStoredAsset(part.instructionAudioPublicId, "video");
       }
       const partQuestions = await db
         .select()
@@ -190,12 +188,12 @@ export async function DELETE(
         .where(eq(questions.partId, part.id));
       for (const q of partQuestions) {
         if (q.audioPublicId) {
-          await deleteCloudinaryAsset(q.audioPublicId, "video");
+          await deleteStoredAsset(q.audioPublicId, "video");
         }
         if (q.imageUrls && Array.isArray(q.imageUrls)) {
           for (const img of q.imageUrls) {
             if (img.public_id) {
-              await deleteCloudinaryAsset(img.public_id, "image");
+              await deleteStoredAsset(img.public_id, "image");
             }
           }
         }

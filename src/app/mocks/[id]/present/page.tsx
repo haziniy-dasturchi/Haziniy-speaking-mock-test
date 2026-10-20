@@ -28,9 +28,7 @@ export default async function PresentationPage(props: {
   }
 
   const mock = mockList[0];
-  if (session.role !== "admin" && mock.ownerId !== session.userId) {
-    redirect("/mocks");
-  }
+  // Running someone else's mock in class is allowed; editing it is not.
 
   // Load parts ordered
   const mockParts = await db
