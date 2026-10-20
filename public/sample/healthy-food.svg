@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="A woman preparing a fresh salad with vegetables in a kitchen">
+  <defs>
+    <linearGradient id="kitchenWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F3F7F2"/>
+      <stop offset="100%" stop-color="#E2EAE0"/>
+    </linearGradient>
+    <linearGradient id="counterTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D8B98F"/>
+      <stop offset="100%" stop-color="#B9975F"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#kitchenWall)"/>
+
+  <!-- kitchen shelf with jars -->
+  <rect x="470" y="110" width="280" height="12" rx="6" fill="#C9B79B"/>
+  <g>
+    <rect x="500" y="50" width="48" height="60" rx="8" fill="#E7EDE6" stroke="#C3CFC1" stroke-width="4"/>
+    <rect x="566" y="38" width="52" height="72" rx="8" fill="#E7EDE6" stroke="#C3CFC1" stroke-width="4"/>
+    <rect x="636" y="56" width="46" height="54" rx="8" fill="#E7EDE6" stroke="#C3CFC1" stroke-width="4"/>
+    <rect x="506" y="76" width="36" height="30" rx="4" fill="#D9B36B"/>
+    <rect x="572" y="66" width="40" height="40" rx="4" fill="#9FC47A"/>
+    <rect x="642" y="80" width="34" height="26" rx="4" fill="#D98C6B"/>
+  </g>
+
+  <!-- window -->
+  <rect x="70" y="60" width="200" height="170" rx="10" fill="#DCEDF5" stroke="#C2D5DE" stroke-width="6"/>
+  <line x1="170" y1="60" x2="170" y2="230" stroke="#C2D5DE" stroke-width="6"/>
+
+  <!-- woman -->
+  <g transform="translate(250 230)">
+    <circle cx="0" cy="-20" r="46" fill="#EFC09A"/>
+    <path d="M-48 -34 a48 48 0 0 1 96 0 q-16 -50 -48 -50 t-48 50 z" fill="#3A2A22"/>
+    <path d="M-52 -30 q-14 60 2 104 q-26 -8 -32 -44 q-4 -40 30 -60 z" fill="#3A2A22"/>
+    <!-- smile -->
+    <path d="M-14 -8 q14 14 28 0" stroke="#A96A42" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- checked shirt -->
+    <path d="M-56 34 q56 -18 112 0 l14 130 q-70 20 -140 0 z" fill="#5E8FC4"/>
+    <g stroke="#3F6FA3" stroke-width="5" opacity="0.85">
+      <line x1="-50" y1="50" x2="-40" y2="160"/>
+      <line x1="-14" y1="40" x2="-10" y2="164"/>
+      <line x1="22" y1="40" x2="26" y2="164"/>
+      <line x1="56" y1="50" x2="62" y2="158"/>
+      <line x1="-56" y1="78" x2="62" y2="78"/>
+      <line x1="-54" y1="118" x2="66" y2="118"/>
+    </g>
+    <!-- raised hand holding a fork -->
+    <rect x="58" y="-10" width="30" height="80" rx="15" fill="#5E8FC4" transform="rotate(-26 58 -10)"/>
+    <circle cx="104" cy="-28" r="18" fill="#EFC09A"/>
+    <rect x="100" y="-84" width="7" height="48" rx="3" fill="#B9BFC6"/>
+    <g fill="#B9BFC6">
+      <rect x="94" y="-98" width="5" height="18" rx="2"/>
+      <rect x="102" y="-100" width="5" height="20" rx="2"/>
+      <rect x="110" y="-98" width="5" height="18" rx="2"/>
+    </g>
+  </g>
+
+  <!-- counter -->
+  <rect y="400" width="800" height="60" fill="url(#counterTop)"/>
+  <rect y="460" width="800" height="140" fill="#EDE5D7"/>
+
+  <!-- salad bowl -->
+  <g transform="translate(430 372)">
+    <ellipse cx="0" cy="0" rx="94" ry="26" fill="#F4F7F3"/>
+    <path d="M-94 0 q10 54 94 54 q84 0 94 -54 z" fill="#E8EEE6" stroke="#CFD9CC" stroke-width="4"/>
+    <g>
+      <circle cx="-48" cy="-6" r="22" fill="#79B85C"/>
+      <circle cx="-8" cy="-14" r="26" fill="#8CC96D"/>
+      <circle cx="36" cy="-6" r="22" fill="#6EA94F"/>
+      <circle cx="62" cy="2" r="16" fill="#E0574B"/>
+      <circle cx="-72" cy="4" r="14" fill="#E0574B"/>
+      <circle cx="14" cy="4" r="13" fill="#F0A93B"/>
+    </g>
+  </g>
+
+  <!-- vegetables on the counter -->
+  <g transform="translate(120 390)">
+    <ellipse cx="0" cy="18" rx="54" ry="18" fill="#8CC96D"/>
+    <path d="M-40 16 q10 -42 34 -46 q28 -4 42 44 z" fill="#79B85C"/>
+    <g fill="#F0A93B">
+      <path d="M90 26 q30 -14 58 -2 q-22 16 -58 8 z"/>
+      <path d="M96 42 q30 -12 56 0 q-26 14 -56 4 z"/>
+    </g>
+  </g>
+
+  <text x="400" y="560" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#0B4F37">
+    Healthy food — namuna rasm
+  </text>
+</svg>

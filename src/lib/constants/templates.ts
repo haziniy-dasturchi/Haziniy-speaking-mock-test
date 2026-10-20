@@ -185,9 +185,90 @@ export const NAVIGATION_AND_HAPPINESS_TEMPLATE: MockTemplate = {
   ],
 };
 
+const FOOD_PICTURES: QuestionImageItem[] = [
+  { url: "/sample/healthy-food.svg", public_id: "sample_healthy_food" },
+  { url: "/sample/fast-food.svg", public_id: "sample_fast_food" },
+];
+
+/**
+ * Third full 8-task exam: clothes, cooking and TV (Part 1.1), healthy food vs
+ * fast food (Part 1.2), a personal failure (Part 2) and whether technology
+ * isolates people (Part 3).
+ */
+export const FOOD_AND_TECHNOLOGY_TEMPLATE: MockTemplate = {
+  id: "multilevel-standard-3",
+  title: "Multilevel Speaking Mock #3 — Standart shablon",
+  levelLabel: "B1–C1",
+  summary:
+    "8 ta topshiriq: kiyim, ovqat va TV savollari, sog'lom ovqat va fast food taqqoslovi, muvaffaqiyatsizlik tajribasi hamda texnologiya va yolg'izlik mavzusi.",
+  usesSamplePictures: true,
+  parts: [
+    {
+      type: "part1_1",
+      questions: [
+        { text: "What kind of clothes do you like to wear?" },
+        { text: "Can you describe a meal you can cook?" },
+        { text: "Tell me about a TV show you enjoy." },
+      ],
+    },
+    {
+      type: "part1_2",
+      questions: [
+        {
+          text: "What do you see in these pictures?",
+          imageUrls: FOOD_PICTURES,
+        },
+        {
+          text: "What benefits can people have by avoiding fast food?",
+          imageUrls: FOOD_PICTURES,
+        },
+        {
+          text: "Why do some people prefer to have unhealthy food?",
+          imageUrls: FOOD_PICTURES,
+        },
+      ],
+    },
+    {
+      type: "part2",
+      questions: [
+        {
+          text: [
+            "1. Tell me about the time when you tried to do something but failed.",
+            "2. How did this failure impact your life and people around you?",
+            "3. Do you think accepting failure is an important part of personal growth?",
+          ].join("\n"),
+          imageUrls: [
+            { url: "/sample/failure-desk.svg", public_id: "sample_failure_desk" },
+          ],
+        },
+      ],
+    },
+    {
+      type: "part3",
+      questions: [
+        {
+          topic: "Technology makes people more isolated.",
+          text: "Technology makes people more isolated.",
+          forPoints: [
+            "Less face-to-face communication",
+            "Increased screen addiction",
+            "Weakens community relationships",
+          ],
+          againstPoints: [
+            "Easier global communication",
+            "Helps maintain long-distance friendships",
+            "Creates online learning communities",
+          ],
+        },
+      ],
+    },
+  ],
+};
+
 export const MOCK_TEMPLATES: MockTemplate[] = [
   SPORTS_AND_FAILURE_TEMPLATE,
   NAVIGATION_AND_HAPPINESS_TEMPLATE,
+  FOOD_AND_TECHNOLOGY_TEMPLATE,
 ];
 
 export function findTemplate(id: string): MockTemplate | undefined {

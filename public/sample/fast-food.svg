@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Three friends laughing while eating burgers and fast food at a table">
+  <defs>
+    <linearGradient id="cafeBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CFE6EC"/>
+      <stop offset="100%" stop-color="#EFF6F7"/>
+    </linearGradient>
+    <linearGradient id="tableTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8E2D6"/>
+      <stop offset="100%" stop-color="#CFC5B2"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#cafeBg)"/>
+
+  <!-- greenery / terrace background -->
+  <g fill="#8FBF8A" opacity="0.85">
+    <circle cx="90" cy="150" r="70"/>
+    <circle cx="160" cy="190" r="54"/>
+    <circle cx="690" cy="140" r="64"/>
+    <circle cx="630" cy="180" r="46"/>
+  </g>
+
+  <!-- three friends -->
+  <!-- left -->
+  <g transform="translate(220 270)">
+    <circle cx="0" cy="-20" r="44" fill="#8B5A3C"/>
+    <path d="M-46 -30 a46 46 0 0 1 92 0 q-10 -56 -46 -56 t-46 56 z" fill="#4A2E1E"/>
+    <path d="M-52 -28 q-18 54 -2 98 q-26 -10 -30 -46 q-2 -36 32 -52 z" fill="#4A2E1E"/>
+    <path d="M-52 36 q52 -16 104 0 l12 120 q-66 18 -128 0 z" fill="#F2D06B"/>
+    <!-- hand near mouth (laughing) -->
+    <rect x="-16" y="-4" width="48" height="26" rx="13" fill="#8B5A3C" transform="rotate(-10 -16 -4)"/>
+    <rect x="18" y="20" width="26" height="60" rx="13" fill="#F2D06B" transform="rotate(-28 18 20)"/>
+  </g>
+
+  <!-- middle -->
+  <g transform="translate(400 250)">
+    <circle cx="0" cy="-20" r="46" fill="#EFC09A"/>
+    <path d="M-48 -32 a48 48 0 0 1 96 0 q-14 -54 -48 -54 t-48 54 z" fill="#2F2A26"/>
+    <path d="M-54 -30 q-16 62 0 106 q-28 -8 -34 -46 q-4 -42 34 -60 z" fill="#2F2A26"/>
+    <path d="M54 -30 q16 62 0 106 q28 -8 34 -46 q4 -42 -34 -60 z" fill="#2F2A26"/>
+    <!-- glasses -->
+    <g stroke="#3C3C44" stroke-width="4" fill="none">
+      <circle cx="-16" cy="-24" r="13"/>
+      <circle cx="16" cy="-24" r="13"/>
+      <line x1="-3" y1="-24" x2="3" y2="-24"/>
+    </g>
+    <path d="M-10 -4 q10 10 20 0" stroke="#A96A42" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M-54 36 q54 -16 108 0 l12 124 q-68 18 -132 0 z" fill="#2B3A4A"/>
+  </g>
+
+  <!-- right -->
+  <g transform="translate(580 268)">
+    <circle cx="0" cy="-20" r="44" fill="#E8B183"/>
+    <path d="M-46 -34 a46 46 0 0 1 92 0 q-18 -40 -46 -40 t-46 40 z" fill="#241A14"/>
+    <path d="M-50 34 q50 -16 100 0 l12 122 q-64 18 -124 0 z" fill="#4D6E8A"/>
+    <rect x="-70" y="60" width="30" height="66" rx="15" fill="#4D6E8A" transform="rotate(22 -70 60)"/>
+  </g>
+
+  <!-- table -->
+  <rect y="430" width="800" height="36" rx="10" fill="url(#tableTop)"/>
+  <rect y="466" width="800" height="134" fill="#DCD3C2"/>
+
+  <!-- burgers -->
+  <g transform="translate(300 376)">
+    <path d="M-52 10 q0 -40 52 -40 q52 0 52 40 z" fill="#E0A85C"/>
+    <rect x="-52" y="10" width="104" height="12" fill="#7FB46A"/>
+    <rect x="-52" y="22" width="104" height="16" fill="#8C5A3B"/>
+    <rect x="-52" y="38" width="104" height="10" fill="#E0574B"/>
+    <path d="M-52 48 q0 24 52 24 q52 0 52 -24 z" fill="#E0A85C"/>
+  </g>
+  <g transform="translate(620 384)">
+    <path d="M-44 8 q0 -34 44 -34 q44 0 44 34 z" fill="#E0A85C"/>
+    <rect x="-44" y="8" width="88" height="10" fill="#7FB46A"/>
+    <rect x="-44" y="18" width="88" height="14" fill="#8C5A3B"/>
+    <path d="M-44 32 q0 20 44 20 q44 0 44 -20 z" fill="#E0A85C"/>
+  </g>
+
+  <!-- soda glasses -->
+  <g transform="translate(430 356)">
+    <path d="M-26 0 h52 l-8 84 h-36 z" fill="#E8674F" opacity="0.9"/>
+    <rect x="-28" y="-8" width="56" height="12" rx="6" fill="#F6F2EA"/>
+    <rect x="10" y="-52" width="7" height="56" rx="3" fill="#F6F2EA" transform="rotate(12 10 -52)"/>
+  </g>
+  <g transform="translate(492 372)">
+    <path d="M-20 0 h40 l-6 68 h-28 z" fill="#F0A93B" opacity="0.9"/>
+    <rect x="-22" y="-8" width="44" height="10" rx="5" fill="#F6F2EA"/>
+  </g>
+
+  <!-- fries -->
+  <g transform="translate(180 392)">
+    <path d="M-30 12 h60 l-8 60 h-44 z" fill="#E0574B"/>
+    <g fill="#F2C35B">
+      <rect x="-24" y="-18" width="10" height="36" rx="4" transform="rotate(-12 -24 -18)"/>
+      <rect x="-8" y="-26" width="10" height="42" rx="4"/>
+      <rect x="8" y="-20" width="10" height="38" rx="4" transform="rotate(10 8 -20)"/>
+      <rect x="20" y="-10" width="10" height="30" rx="4" transform="rotate(18 20 -10)"/>
+    </g>
+  </g>
+
+  <text x="400" y="560" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#0B4F37">
+    Fast food — namuna rasm
+  </text>
+</svg>
